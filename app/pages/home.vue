@@ -5,17 +5,25 @@
       <div class="flex items-center gap-6">
         <h1 class="text-4xl font-normal text-espresso tracking-tight">Clove</h1>
         <div class="hidden md:block h-8 w-px bg-espresso/10"></div>
-        <p class="hidden md:block text-espresso/60 font-sans font-black text-[0.7rem] uppercase tracking-[0.4em] mt-1">Kitchen Archive</p>
+        <p class="hidden md:block text-espresso/60 font-sans font-black text-[0.7rem] uppercase tracking-[0.4em] mt-1">Cook and love</p>
       </div>
       
       <div class="flex items-center gap-10">
-        <div class="relative group cursor-pointer flex items-center gap-4 py-2 px-4 rounded-full border border-espresso/5 hover:bg-white/10 transition-all duration-300">
-          <div class="w-10 h-10 rounded-full bg-espresso text-matcha flex items-center justify-center font-sans font-black text-sm uppercase">
+        <div class="relative group cursor-pointer flex items-center gap-4 py-2 pl-2 pr-6 rounded-full border border-espresso/10 bg-white/5 hover:bg-white/20 hover:border-espresso/20 transition-all duration-500 shadow-sm hover:shadow-lg hover:shadow-espresso/5 active:scale-[0.98]">
+          <div class="w-12 h-12 rounded-full bg-espresso text-matcha flex items-center justify-center font-sans font-black text-sm uppercase shadow-md relative group-hover:scale-105 transition-transform duration-500 overflow-hidden ring-4 ring-matcha/30">
+            <div class="absolute inset-0 bg-linear-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             {{ user?.name?.[0] || 'V' }}
           </div>
           <div class="flex flex-col">
-            <span class="font-sans font-black text-[0.75rem] uppercase tracking-widest text-espresso leading-none">{{ user?.name || 'Profile' }}</span>
-            <span class="font-sans font-bold text-[0.6rem] text-espresso/50 uppercase tracking-widest mt-1">My Settings</span>
+            <span class="font-sans font-black text-[0.75rem] uppercase tracking-widest text-espresso leading-none mb-1.5">{{ user?.name || 'Profile' }}</span>
+            <div class="relative h-3 overflow-hidden">
+              <div class="flex flex-col transition-all duration-500">
+                <span class="h-3 flex items-center font-sans font-black text-[0.6rem] text-espresso uppercase tracking-widest gap-1.5 whitespace-nowrap">
+                  Dashboard
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -61,7 +69,7 @@
         </button>
 
         <!-- Dummy Recipes - Premium Designer Cards -->
-        <div v-for="recipe in recipes" :key="recipe.title" class="group flex flex-col bg-white/40 rounded-[3.5rem] border-2 border-white/60 overflow-hidden cursor-pointer shadow-2xl shadow-espresso/5 transition-all duration-700 hover:border-espresso/20">
+        <div v-for="recipe in recipes" :key="recipe.title" class="group flex flex-col h-[520px] bg-white/40 rounded-[3.5rem] border-2 border-white/60 overflow-hidden cursor-pointer shadow-2xl shadow-espresso/5 transition-all duration-700 hover:border-espresso/20">
            <div class="h-80 overflow-hidden relative border-b border-espresso/5">
               <img :src="recipe.image" :alt="recipe.title" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
               <!-- Glass Badge Overlay -->
@@ -72,25 +80,20 @@
               </div>
            </div>
 
-           <div class="p-10 flex flex-col flex-1 bg-linear-to-b from-white/10 to-white/30">
-             <div class="flex items-center gap-4 mb-6 font-sans font-black text-[0.65rem] uppercase tracking-[0.3em] text-espresso/40">
+           <div class="p-8 flex flex-col flex-1 bg-linear-to-b from-white/10 to-white/30">
+             <div class="flex items-center gap-4 mb-3 font-sans font-black text-[0.65rem] uppercase tracking-[0.3em] text-espresso/40">
                 <span class="text-espresso/60 px-3 py-1 bg-espresso/5 rounded-lg border border-espresso/5">{{ recipe.time }}</span>
                 <span class="w-1.5 h-1.5 rounded-full bg-espresso/10"></span>
                 <span>Active</span>
              </div>
              
-             <h3 class="text-3xl text-espresso mb-5 font-normal leading-[1.15] tracking-tight group-hover:text-espresso/70 transition-colors">
+             <h3 class="text-2xl text-espresso mb-3 font-normal leading-[1.15] tracking-tight group-hover:text-espresso/70 transition-colors">
                {{ recipe.title }}
              </h3>
              
-             <p class="text-espresso/60 font-sans font-bold text-[0.85rem] leading-relaxed line-clamp-2 italic mb-8">
+             <p class="text-espresso/60 font-sans font-bold text-[0.85rem] leading-relaxed line-clamp-2 italic">
                "{{ recipe.description }}"
              </p>
-             
-             <div class="mt-auto border-t border-espresso/10 pt-8 flex items-center justify-between opacity-80 group-hover:opacity-100 transition-opacity">
-               <span class="text-espresso font-sans font-black text-[0.7rem] uppercase tracking-[0.3em]">View Archive</span>
-               <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-espresso/40 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-             </div>
            </div>
         </div>
       </section>
