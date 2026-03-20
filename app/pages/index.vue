@@ -21,7 +21,7 @@
          class="absolute inset-x-0 inset-y-0 flex items-center justify-center transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
          :class="activePanel === 'login' ? 'opacity-100 translate-y-0 delay-200' : 'opacity-0 translate-y-[150%] pointer-events-none'"
        >
-         <div class="bg-white/20 backdrop-blur-xl p-8 md:p-14 rounded-[3rem] shadow-2xl w-full max-w-md mx-6 border-[1.5px] border-white/40 cursor-auto" @click.stop>
+         <div class="bg-white/30 backdrop-blur-xl p-8 md:p-14 rounded-[3rem] shadow-2xl w-full max-w-md mx-6 border-[1.5px] border-white/40 cursor-auto" @click.stop>
            <h2 class="text-4xl text-espresso mb-2 tracking-wide font-normal">Welcome Back</h2>
            <p class="text-espresso/80 mb-8 font-sans font-medium">Enter your details to access your recipes.</p>
            
@@ -70,7 +70,7 @@
          class="absolute inset-x-0 inset-y-0 flex items-center justify-center transition-all duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)]"
          :class="activePanel === 'register' ? 'opacity-100 translate-y-0 delay-200' : 'opacity-0 -translate-y-[150%] pointer-events-none'"
        >
-         <div class="bg-white/10 backdrop-blur-xl p-8 md:p-14 rounded-[3rem] shadow-2xl w-full max-w-md mx-6 border-[1.5px] border-white/20 cursor-auto" @click.stop>
+         <div class="bg-black/25 backdrop-blur-xl p-8 md:p-14 rounded-[3rem] shadow-2xl w-full max-w-md mx-6 border-[1.5px] border-white/20 cursor-auto" @click.stop>
            <h2 class="text-4xl text-matcha mb-2 tracking-wide font-normal">Join Clove</h2>
            <p class="text-matcha/80 mb-8 font-sans font-medium">Start your digital recipe book today.</p>
            
