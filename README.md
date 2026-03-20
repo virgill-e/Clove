@@ -1,4 +1,4 @@
-# 🍀 Clove
+# Clove - cook with love
 
 > A personal recipe manager — create, organize, and rediscover your kitchen repertoire.
 
