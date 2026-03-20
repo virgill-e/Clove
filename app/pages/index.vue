@@ -37,7 +37,7 @@
              <form class="space-y-4 font-sans" @submit.prevent>
                <div class="group/input form-item">
                  <label class="block text-xs font-bold uppercase tracking-widest text-espresso/70 mb-1 ml-2 transition-colors group-focus-within/input:text-espresso">Email</label>
-                 <input type="email" class="w-full bg-white/40 border-[1.5px] border-white/50 rounded-3xl px-6 py-4 focus:outline-none focus:bg-white/60 focus:border-espresso/80 text-espresso placeholder-espresso/40 transition-all font-medium shadow-sm" placeholder="chef@clove.com" />
+                 <input type="email" class="w-full bg-white/40 border-[1.5px] border-white/50 rounded-3xl px-6 py-4 focus:outline-none focus:bg-white/60 focus:border-espresso/80 text-espresso placeholder-espresso/40 transition-all font-medium shadow-sm" placeholder="Virgile@clove.be" />
                </div>
                <div class="group/input form-item">
                  <label class="block text-xs font-bold uppercase tracking-widest text-espresso/70 mb-1 ml-2 transition-colors group-focus-within/input:text-espresso">Password</label>
@@ -96,11 +96,11 @@
              <form class="space-y-4 font-sans" @submit.prevent>
                <div class="group/input form-item">
                  <label class="block text-xs font-bold uppercase tracking-widest text-matcha/70 mb-1 ml-2 transition-colors group-focus-within/input:text-matcha">Name</label>
-                 <input type="text" class="w-full bg-white/20 border-[1.5px] border-white/30 rounded-3xl px-6 py-3.5 focus:outline-none focus:bg-white/30 focus:border-matcha/80 text-white placeholder-white/50 transition-all font-medium shadow-sm" placeholder="Julia Child" />
+                 <input type="text" class="w-full bg-white/20 border-[1.5px] border-white/30 rounded-3xl px-6 py-3.5 focus:outline-none focus:bg-white/30 focus:border-matcha/80 text-white placeholder-white/50 transition-all font-medium shadow-sm" placeholder="Virgile Bigaré" />
                </div>
                <div class="group/input form-item">
                  <label class="block text-xs font-bold uppercase tracking-widest text-matcha/70 mb-1 ml-2 transition-colors group-focus-within/input:text-matcha">Email</label>
-                 <input type="email" class="w-full bg-white/20 border-[1.5px] border-white/30 rounded-3xl px-6 py-3.5 focus:outline-none focus:bg-white/30 focus:border-matcha/80 text-white placeholder-white/50 transition-all font-medium shadow-sm" placeholder="chef@clove.com" />
+                 <input type="email" class="w-full bg-white/20 border-[1.5px] border-white/30 rounded-3xl px-6 py-3.5 focus:outline-none focus:bg-white/30 focus:border-matcha/80 text-white placeholder-white/50 transition-all font-medium shadow-sm" placeholder="Virgile@clove.be" />
                </div>
                <div class="group/input form-item">
                  <label class="block text-xs font-bold uppercase tracking-widest text-matcha/70 mb-1 ml-2 transition-colors group-focus-within/input:text-matcha">Password</label>
