@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+@theme {
+  --color-strawberry: #F9D1D9;
+  --color-matcha: #838F58;
+}
