@@ -119,9 +119,6 @@ DATABASE_URL=postgresql://clove:yourpassword@db:5432/clove
 
 # Auth (generate with: openssl rand -base64 32)
 NUXT_SESSION_SECRET=your-super-secret-key
-
-# App
-NUXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
 ### 3. Run with Docker
@@ -129,8 +126,6 @@ NUXT_PUBLIC_APP_URL=http://localhost:3000
 ```bash
 docker compose up -d
 ```
-
-The app will be available at **http://localhost:3000**.
 
 ### 4. Run database migrations
 
