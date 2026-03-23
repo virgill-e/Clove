@@ -9,22 +9,63 @@
       </div>
       
       <div class="flex items-center gap-10">
-        <div class="relative group cursor-pointer flex items-center gap-4 py-2 pl-2 pr-6 rounded-full border border-espresso/10 bg-white/5 hover:bg-white/20 hover:border-espresso/20 transition-all duration-500 shadow-sm hover:shadow-lg hover:shadow-espresso/5 active:scale-[0.98]">
-          <div class="w-12 h-12 rounded-full bg-espresso text-matcha flex items-center justify-center font-sans font-black text-sm uppercase shadow-md relative group-hover:scale-105 transition-transform duration-500 overflow-hidden ring-4 ring-matcha/30">
-            <div class="absolute inset-0 bg-linear-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            {{ user?.name?.[0] || 'V' }}
-          </div>
-          <div class="flex flex-col">
-            <span class="font-sans font-black text-[0.75rem] uppercase tracking-widest text-espresso leading-none mb-1.5">{{ user?.name || 'Profile' }}</span>
-            <div class="relative h-3 overflow-hidden">
-              <div class="flex flex-col transition-all duration-500">
-                <span class="h-3 flex items-center font-sans font-black text-[0.6rem] text-espresso uppercase tracking-widest gap-1.5 whitespace-nowrap">
-                  Dashboard
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                </span>
+        <div 
+          class="relative group"
+          @mouseenter="isMenuVisible = true"
+          @mouseleave="isMenuVisible = false"
+        >
+          <div 
+            @click="toggleMenu"
+            class="cursor-pointer flex items-center gap-4 py-2 pl-2 pr-6 rounded-full border border-espresso/10 bg-white/5 hover:bg-white/20 hover:border-espresso/20 transition-all duration-500 shadow-sm hover:shadow-lg hover:shadow-espresso/5 active:scale-[0.98]"
+          >
+            <div class="w-12 h-12 rounded-full bg-espresso text-matcha flex items-center justify-center font-sans font-black text-sm uppercase shadow-md relative group-hover:scale-105 transition-transform duration-500 overflow-hidden ring-4 ring-matcha/30">
+              <div class="absolute inset-0 bg-linear-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              {{ user?.name?.[0] || 'V' }}
+            </div>
+            <div class="flex flex-col">
+              <span class="font-sans font-black text-[0.75rem] uppercase tracking-widest text-espresso leading-none mb-1.5">{{ user?.name || 'Profile' }}</span>
+              <div class="relative h-3 overflow-hidden">
+                <div class="flex flex-col transition-all duration-500">
+                  <span class="h-3 flex items-center font-sans font-black text-[0.6rem] text-espresso uppercase tracking-widest gap-1.5 whitespace-nowrap">
+                    Dashboard
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-2.5 h-2.5 transition-transform duration-300" :class="{'rotate-180': isMenuVisible}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+
+          <!-- Dropdown Menu -->
+          <Transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="transform scale-95 opacity-0 -translate-y-2"
+            enter-to-class="transform scale-100 opacity-100 translate-y-0"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="transform scale-100 opacity-100 translate-y-0"
+            leave-to-class="transform scale-95 opacity-0 -translate-y-2"
+          >
+            <div 
+              v-if="isMenuVisible"
+              class="absolute right-0 top-full pt-3 w-56 z-50"
+            >
+              <div class="bg-white/95 backdrop-blur-2xl border border-espresso/10 rounded-4xl shadow-2xl shadow-espresso/10 overflow-hidden py-2">
+                <div class="px-6 py-4 border-b border-espresso/5 mb-2">
+                  <p class="font-sans font-black text-[0.6rem] uppercase tracking-[0.2em] text-espresso/40 mb-1">Signed in as</p>
+                  <p class="font-sans font-bold text-sm text-espresso truncate">{{ user?.email || 'user@clove.be' }}</p>
+                </div>
+                
+                <button 
+                  @click="handleLogout"
+                  class="w-full px-6 py-4 text-left font-sans font-black text-[0.7rem] uppercase tracking-[0.3em] text-espresso hover:bg-espresso hover:text-matcha transition-all duration-300 flex items-center justify-between group/item"
+                >
+                  Sign Out
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform transition-transform group-hover/item:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </Transition>
         </div>
       </div>
     </header>
@@ -113,7 +154,12 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const user = ref<{ name: string } | null>(null)
+const user = ref<{ name: string, email: string } | null>(null)
+const isMenuVisible = ref(false)
+
+const toggleMenu = () => {
+  isMenuVisible.value = !isMenuVisible.value
+}
 
 const recipes = [
   {
@@ -138,6 +184,15 @@ const recipes = [
     description: 'Unexpectedly rich and sweet carrots braised in a coffee reduction with sea salt flakes.'
   }
 ]
+
+const handleLogout = async () => {
+  try {
+    await $fetch('/api/auth/logout', { method: 'POST' })
+    navigateTo('/')
+  } catch (e) {
+    console.error('Logout failed', e)
+  }
+}
 
 onMounted(async () => {
   const { data } = await useFetch<{ user: any }>('/api/auth/me')
