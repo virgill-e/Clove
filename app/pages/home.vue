@@ -125,7 +125,12 @@
         </button>
 
         <!-- Dynamic Recipes -->
-        <div v-for="recipe in filteredRecipes" :key="recipe.id" class="group flex flex-col h-[520px] bg-white/40 rounded-[3.5rem] border-2 border-white/60 overflow-hidden cursor-pointer shadow-2xl shadow-espresso/5 transition-all duration-700 hover:border-espresso/20">
+        <div 
+          v-for="recipe in filteredRecipes" 
+          :key="recipe.id" 
+          @click="navigateTo(`/recipes/${recipe.id}`)"
+          class="group flex flex-col h-[520px] bg-white/40 rounded-[3.5rem] border-2 border-white/60 overflow-hidden cursor-pointer shadow-2xl shadow-espresso/5 transition-all duration-700 hover:border-espresso/20"
+        >
            <div class="h-80 overflow-hidden relative border-b border-espresso/5">
               <img :src="recipe.imageUrl || '/img/matcha.jpg'" :alt="recipe.title" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
               <div class="absolute top-6 right-6 flex items-center gap-2">
