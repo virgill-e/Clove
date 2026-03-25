@@ -91,11 +91,20 @@
 
         <div class="flex items-center justify-center gap-3 flex-wrap font-sans font-black text-[0.7rem] uppercase tracking-[0.25em]">
            <button 
-             v-for="tag in ['All Objects', 'Bakery', 'Infusions', 'Desserts', 'Daily']" 
-             :key="tag"
-             @click="activeTag = tag === 'All Objects' ? '' : tag"
+             @click="activeTag = ''"
              :class="[
-               (activeTag === tag || (tag === 'All Objects' && !activeTag)) ? 'bg-espresso text-matcha shadow-lg shadow-espresso/10' : 'text-espresso/70 border-2 border-espresso/10 hover:border-espresso/40 bg-white/10',
+               (!activeTag) ? 'bg-espresso text-matcha shadow-lg shadow-espresso/10' : 'text-espresso/70 border-2 border-espresso/10 hover:border-espresso/40 bg-white/10',
+               'px-8 py-3 rounded-full transition-all'
+             ]"
+           >
+             All Recipes
+           </button>
+           <button 
+             v-for="tag in tags" 
+             :key="tag"
+             @click="activeTag = tag"
+             :class="[
+               (activeTag === tag) ? 'bg-espresso text-matcha shadow-lg shadow-espresso/10' : 'text-espresso/70 border-2 border-espresso/10 hover:border-espresso/40 bg-white/10',
                'px-8 py-3 rounded-full transition-all'
              ]"
            >
@@ -145,14 +154,14 @@
       </section>
 
       <footer class="mt-48 pb-16 text-center border-t border-espresso/5 pt-16">
-        <p class="font-sans font-black text-[0.6rem] uppercase tracking-[0.6em] text-espresso/30">Clove Collection &reg; Selected Recipes &bull; MMXXVI</p>
+        <p class="font-sans font-black text-[0.6rem] uppercase tracking-[0.6em] text-espresso/30">Clove &reg; &bull; 2026</p>
       </footer>
     </main>
 
     <RecipeModal 
       :is-open="isModalOpen" 
       @close="isModalOpen = false" 
-      @success="fetchRecipes" 
+      @success="() => { fetchRecipes(); fetchTags(); }" 
     />
   </div>
 </template>
@@ -169,6 +178,7 @@ const user = ref<{ name: string, email: string } | null>(null)
 const isMenuVisible = ref(false)
 const isModalOpen = ref(false)
 const recipes = ref<any[]>([])
+const tags = ref<string[]>([])
 const searchQuery = ref('')
 const activeTag = ref('')
 
@@ -182,6 +192,15 @@ const fetchRecipes = async () => {
     recipes.value = data
   } catch (e) {
     console.error('Failed to fetch recipes', e)
+  }
+}
+
+const fetchTags = async () => {
+  try {
+    const data = await $fetch<string[]>('/api/recipes/tags')
+    tags.value = data
+  } catch (e) {
+    console.error('Failed to fetch tags', e)
   }
 }
 
@@ -209,6 +228,7 @@ onMounted(async () => {
     user.value = data.value.user
   }
   fetchRecipes()
+  fetchTags()
 })
 </script>
 

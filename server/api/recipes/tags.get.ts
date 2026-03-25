@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
         searchTerm ? like(recipes.tag, `%${searchTerm}%`) : undefined
       )
     )
-    .limit(10)
+    .limit(50)
     .all();
 
   return results.map((r: { tag: string | null }) => r.tag).filter(Boolean) as string[];
