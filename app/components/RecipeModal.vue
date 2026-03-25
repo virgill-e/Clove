@@ -107,13 +107,44 @@
 
           <!-- Extra details -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="space-y-2">
-              <label class="block text-[0.65rem] font-black uppercase tracking-[0.3em] text-espresso/50 ml-6">Cooking / Prep Time</label>
-              <input v-model="form.cookingTime" type="text" placeholder="e.g. 45 min" class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm" />
-            </div>
-            <div class="space-y-2">
-              <label class="block text-[0.65rem] font-black uppercase tracking-[0.3em] text-espresso/50 ml-6">Image URL (Optional)</label>
-              <input v-model="form.imageUrl" type="text" placeholder="https://..." class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm" />
+            <div class="space-y-4">
+               <div class="space-y-2">
+                 <label class="block text-[0.65rem] font-black uppercase tracking-[0.3em] text-espresso/50 ml-6">Cooking / Prep Time</label>
+                 <input v-model="form.cookingTime" type="text" placeholder="e.g. 45 min" class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm" />
+               </div>
+               
+               <div class="space-y-2">
+                 <label class="block text-[0.65rem] font-black uppercase tracking-[0.3em] text-espresso/50 ml-6">Recipe Image</label>
+                 <div 
+                   @click="fileInput?.click()"
+                   @dragover.prevent
+                   @drop.prevent="handleFileDrop"
+                   class="w-full min-h-[160px] bg-white/50 border-2 border-dashed border-white/80 rounded-4xl flex flex-col items-center justify-center p-8 cursor-pointer hover:border-espresso/20 hover:bg-white/80 transition-all group overflow-hidden relative"
+                 >
+                   <input 
+                     ref="fileInput" 
+                     type="file" 
+                     class="hidden" 
+                     accept="image/*" 
+                     @change="handleFileChange" 
+                   />
+                   
+                   <div v-if="imagePreview" class="absolute inset-0">
+                      <img :src="imagePreview" class="w-full h-full object-cover" />
+                      <div class="absolute inset-0 bg-espresso/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                         <span class="text-white font-sans font-black text-[0.6rem] uppercase tracking-widest">Change Image</span>
+                      </div>
+                   </div>
+                   
+                   <div v-else class="text-center">
+                      <div class="w-12 h-12 rounded-full bg-espresso/5 flex items-center justify-center mb-4 mx-auto group-hover:scale-110 transition-transform">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-espresso/40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                      </div>
+                      <p class="font-sans font-black text-[0.6rem] uppercase tracking-widest text-espresso/30 group-hover:text-espresso/50">Upload or Drop Image</p>
+                      <p class="font-sans font-bold text-[0.55rem] text-espresso/20 mt-1 uppercase">Max 5MB • JPG, PNG, WebP</p>
+                   </div>
+                 </div>
+               </div>
             </div>
           </div>
 
@@ -157,11 +188,14 @@ const suggestions = ref<any[]>([])
 const isTagSuggestionsVisible = ref(false)
 const tagSuggestions = ref<string[]>([])
 
+const fileInput = ref<HTMLInputElement | null>(null)
+const selectedFile = ref<File | null>(null)
+const imagePreview = ref<string | null>(null)
+
 const initialForm = {
   title: '',
   description: '',
   instructions: '',
-  imageUrl: '',
   tag: 'Daily',
   cookingTime: '',
   ingredientInputs: [
@@ -171,9 +205,38 @@ const initialForm = {
 
 const form = reactive({ ...initialForm })
 
+const handleFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    const file = target.files[0]
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image is too large. Max 5MB.')
+      return
+    }
+    selectedFile.value = file
+    imagePreview.value = URL.createObjectURL(file)
+  }
+}
+
+const handleFileDrop = (e: DragEvent) => {
+  if (e.dataTransfer?.files && e.dataTransfer.files[0]) {
+    const file = e.dataTransfer.files[0]
+    if (file.type.startsWith('image/')) {
+      if (file.size > 5 * 1024 * 1024) {
+         alert('Image is too large. Max 5MB.')
+         return
+      }
+      selectedFile.value = file
+      imagePreview.value = URL.createObjectURL(file)
+    }
+  }
+}
+
 const close = () => {
   Object.assign(form, initialForm)
   form.ingredientInputs = [{ name: '', amount: '' }]
+  selectedFile.value = null
+  imagePreview.value = null
   emit('close')
 }
 
@@ -247,9 +310,21 @@ const handleSubmit = async () => {
   
   loading.value = true
   try {
+    const formData = new FormData()
+    formData.append('title', form.title)
+    formData.append('description', form.description)
+    formData.append('instructions', form.instructions)
+    formData.append('tag', form.tag)
+    formData.append('cookingTime', form.cookingTime)
+    formData.append('ingredientInputs', JSON.stringify(form.ingredientInputs))
+    
+    if (selectedFile.value) {
+      formData.append('image', selectedFile.value)
+    }
+
     await $fetch('/api/recipes', {
       method: 'POST',
-      body: form
+      body: formData
     })
     emit('success')
     close()
