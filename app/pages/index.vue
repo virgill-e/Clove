@@ -5,7 +5,7 @@
     <div 
       class="relative flex items-center justify-center transition-all duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group overflow-hidden"
       :class="[
-        activePanel === 'login' ? 'basis-full md:basis-[85%]' : 'basis-16 md:basis-24 brightness-90 grayscale-20',
+        activePanel === 'login' ? 'flex-1' : 'basis-16 md:basis-24 brightness-90 grayscale-20',
         'bg-matcha bg-[url(/img/matcha.jpg)] bg-cover bg-center'
       ]"
       @click="activePanel !== 'login' ? activePanel = 'login' : null"
@@ -69,7 +69,7 @@
     <div 
       class="relative flex items-center justify-center transition-all duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group overflow-hidden"
       :class="[
-        activePanel === 'register' ? 'basis-full md:basis-[85%]' : 'basis-16 md:basis-24 brightness-90 grayscale-20',
+        activePanel === 'register' ? 'flex-1' : 'basis-16 md:basis-24 brightness-90 grayscale-20',
         'bg-espresso bg-[url(/img/espresso.jpeg)] bg-cover bg-center'
       ]"
       @click="activePanel !== 'register' ? activePanel = 'register' : null"
