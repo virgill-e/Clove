@@ -150,7 +150,7 @@
     <!-- FOOTER -->
     <footer class="w-full py-12 border-t border-espresso/5 flex flex-col items-center justify-center relative z-10 bg-cream/50 backdrop-blur-lg">
       <p class="font-serif italic text-2xl text-espresso/40 mb-4">Clove.</p>
-      <p class="font-semibold text-[0.55rem] uppercase tracking-[0.4em] text-espresso/30">Crafted with precision &bull; 2026</p>
+      <p class="font-semibold text-[0.55rem] uppercase tracking-[0.4em] text-espresso/30">Crafted with love &bull; 2026</p>
     </footer>
 
     <RecipeModal 

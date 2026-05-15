@@ -17,7 +17,7 @@
       <div class="overflow-hidden">
         <h1 class="nav-item text-2xl md:text-3xl font-serif text-espresso tracking-tight leading-none">Clove.</h1>
       </div>
-      <div class="overflow-hidden flex items-center gap-6">
+      <div class=" flex items-center gap-6">
         <button 
           v-if="isOwner"
           @click="isModalOpen = true"
@@ -136,7 +136,7 @@
       <div class="flex items-center gap-10 mb-12">
          <button @click="navigateTo('/home')" class="font-bold text-[0.6rem] uppercase tracking-[0.4em] text-espresso/30 hover:text-espresso transition-all hover:tracking-[0.6em]">Back to Gallery</button>
       </div>
-      <p class="font-bold text-[0.55rem] uppercase tracking-[0.5em] text-espresso/10 tracking-widest">© 2026 Crafted for Chefs</p>
+      <p class="font-bold text-[0.55rem] uppercase tracking-[0.5em] text-espresso/10 tracking-widest">© 2026 Crafted with Love</p>
     </footer>
 
     <!-- Edit Modal -->
