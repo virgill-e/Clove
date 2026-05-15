@@ -1,167 +1,151 @@
 <template>
-  <div class="min-h-screen bg-matcha overflow-x-hidden font-serif selection:bg-espresso/10 selection:text-espresso">
-    <!-- TOP NAVIGATION -->
-    <header class="p-6 md:px-12 md:py-8 flex items-center justify-between bg-matcha/80 backdrop-blur-xl sticky top-0 z-50 border-b border-espresso/10">
-      <div class="flex items-center gap-6">
-        <h1 class="text-4xl font-normal text-espresso tracking-tight">Clove</h1>
-        <div class="hidden md:block h-8 w-px bg-espresso/10"></div>
-        <p class="hidden md:block text-espresso/60 font-sans font-black text-[0.7rem] uppercase tracking-[0.4em] mt-1">Cook and love</p>
+  <div class="min-h-screen bg-cream text-espresso overflow-x-hidden font-sans selection:bg-matcha/30 selection:text-espresso relative flex flex-col">
+    <!-- Noise overlay -->
+    <div class="pointer-events-none fixed inset-0 z-50 opacity-[0.04] mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+    
+    <!-- NAVIGATION -->
+    <header class="w-full px-8 py-8 md:px-16 md:py-10 flex items-center justify-between z-40 relative">
+      <div class="overflow-hidden">
+        <h1 class="text-4xl md:text-5xl font-serif text-espresso tracking-tight leading-none nav-item">Clove.</h1>
       </div>
       
-      <div class="flex items-center gap-10">
-        <div 
-          class="relative group"
-          @mouseenter="isMenuVisible = true"
-          @mouseleave="isMenuVisible = false"
-        >
-          <div 
-            @click="toggleMenu"
-            class="cursor-pointer flex items-center gap-4 py-2 pl-2 pr-6 rounded-full border border-espresso/10 bg-white/5 hover:bg-white/20 hover:border-espresso/20 transition-all duration-500 shadow-sm hover:shadow-lg hover:shadow-espresso/5 active:scale-[0.98]"
-          >
-            <div class="w-12 h-12 rounded-full bg-espresso text-matcha flex items-center justify-center font-sans font-black text-sm uppercase shadow-md relative group-hover:scale-105 transition-transform duration-500 overflow-hidden ring-4 ring-matcha/30">
-              <div class="absolute inset-0 bg-linear-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              {{ user?.name?.[0] || 'V' }}
-            </div>
-            <div class="flex flex-col">
-              <span class="font-sans font-black text-[0.75rem] uppercase tracking-widest text-espresso leading-none mb-1.5">{{ user?.name || 'Profile' }}</span>
-              <div class="relative h-3 overflow-hidden">
-                <div class="flex flex-col transition-all duration-500">
-                  <span class="h-3 flex items-center font-sans font-black text-[0.6rem] text-espresso uppercase tracking-widest gap-1.5 whitespace-nowrap">
-                    Dashboard
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-2.5 h-2.5 transition-transform duration-300" :class="{'rotate-180': isMenuVisible}" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"/></svg>
-                  </span>
-                </div>
-              </div>
-            </div>
+      <!-- Profile / User Actions -->
+      <div class="flex items-center gap-6 overflow-hidden">
+        <div class="nav-item flex items-center gap-4 bg-white/40 backdrop-blur-md px-4 py-2 rounded-full border border-espresso/10 shadow-[0_4px_16px_rgba(74,43,24,0.05)] hover:bg-white/60 transition-colors cursor-pointer group" @click="handleLogout">
+          <div class="flex flex-col text-right">
+            <span class="font-semibold text-[0.65rem] uppercase tracking-[0.15em] leading-tight text-espresso">{{ user?.name || 'Chef' }}</span>
+            <span class="font-medium text-[0.55rem] uppercase tracking-[0.2em] text-espresso/50 group-hover:text-espresso/80 transition-colors">Sign Out</span>
           </div>
-
-          <!-- Dropdown Menu -->
-          <Transition
-            enter-active-class="transition duration-300 ease-out"
-            enter-from-class="transform scale-95 opacity-0 -translate-y-2"
-            enter-to-class="transform scale-100 opacity-100 translate-y-0"
-            leave-active-class="transition duration-200 ease-in"
-            leave-from-class="transform scale-100 opacity-100 translate-y-0"
-            leave-to-class="transform scale-95 opacity-0 -translate-y-2"
-          >
-            <div 
-              v-if="isMenuVisible"
-              class="absolute right-0 top-full pt-3 w-56 z-50"
-            >
-              <div class="bg-white/95 backdrop-blur-2xl border border-espresso/10 rounded-4xl shadow-2xl shadow-espresso/10 overflow-hidden py-2">
-                <div class="px-6 py-4 border-b border-espresso/5 mb-2">
-                  <p class="font-sans font-black text-[0.6rem] uppercase tracking-[0.2em] text-espresso/40 mb-1">Signed in as</p>
-                  <p class="font-sans font-bold text-sm text-espresso truncate">{{ user?.email || 'user@clove.be' }}</p>
-                </div>
-                
-                <button 
-                  @click="handleLogout"
-                  class="w-full px-6 py-4 text-left font-sans font-black text-[0.7rem] uppercase tracking-[0.3em] text-espresso hover:bg-espresso hover:text-matcha transition-all duration-300 flex items-center justify-between group/item"
-                >
-                  Sign Out
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform transition-transform group-hover/item:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </Transition>
+          <div class="w-10 h-10 rounded-full bg-espresso text-cream flex items-center justify-center font-serif text-xl italic shadow-inner">
+            {{ user?.name?.[0] || 'V' }}
+          </div>
         </div>
       </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-12 md:py-24">
+    <main class="flex-1 w-full max-w-screen-2xl mx-auto px-8 md:px-16 pb-32 flex flex-col items-center">
       
-      <!-- HERO & SEARCH AREA -->
-      <section class="max-w-3xl mx-auto text-center mb-32">
-        <h2 class="text-6xl md:text-8xl text-espresso mb-12 leading-[1.05] font-light">
-          Your <span class="italic text-espresso/80">curated</span> <br/> 
-          <span class="font-normal">collection.</span>
+      <!-- HERO -->
+      <section class="w-full flex flex-col items-center justify-center text-center mt-12 md:mt-24 mb-32">
+        <div class="overflow-hidden mb-6">
+          <p class="hero-subtitle font-medium text-[0.65rem] md:text-xs uppercase tracking-[0.4em] text-espresso/60 mb-2">Your Personal Digital Kitchen</p>
+        </div>
+        <h2 class="text-7xl md:text-[9rem] lg:text-[11rem] leading-[0.85] font-serif text-espresso tracking-tighter flex flex-col items-center">
+          <div class="overflow-hidden py-2"><span class="hero-title-line block">Curate,</span></div>
+          <div class="overflow-hidden py-2 flex items-center gap-4 md:gap-8">
+            <span class="hero-title-line block italic font-light text-espresso/80">cook</span> 
+            <span class="hero-title-line block">&amp; share.</span>
+          </div>
         </h2>
         
-        <div class="relative max-w-2xl mx-auto mb-14 drop-shadow-sm">
-          <input 
-            v-model="searchQuery"
-            type="text" 
-            placeholder="Find a recipe..." 
-            class="w-full bg-white/40 border-2 border-white/50 rounded-full px-14 py-6 focus:outline-none focus:bg-white/60 focus:border-espresso/30 text-espresso placeholder-espresso/40 transition-all font-sans font-bold text-base tracking-wide shadow-inner"
-          />
-          <svg xmlns="http://www.w3.org/2000/svg" class="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-espresso/50" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        </div>
-
-        <div class="flex items-center justify-center gap-3 flex-wrap font-sans font-black text-[0.7rem] uppercase tracking-[0.25em]">
-           <button 
-             @click="activeTag = ''"
-             :class="[
-               (!activeTag) ? 'bg-espresso text-matcha shadow-lg shadow-espresso/10' : 'text-espresso/70 border-2 border-espresso/10 hover:border-espresso/40 bg-white/10',
-               'px-8 py-3 rounded-full transition-all'
-             ]"
-           >
-             All Recipes
-           </button>
-           <button 
-             v-for="tag in tags" 
-             :key="tag"
-             @click="activeTag = tag"
-             :class="[
-               (activeTag === tag) ? 'bg-espresso text-matcha shadow-lg shadow-espresso/10' : 'text-espresso/70 border-2 border-espresso/10 hover:border-espresso/40 bg-white/10',
-               'px-8 py-3 rounded-full transition-all'
-             ]"
-           >
-             {{ tag }}
-           </button>
+        <!-- SEARCH & FILTER -->
+        <div class="w-full max-w-3xl mt-20 relative z-20 hero-search">
+          <div class="relative group">
+            <div class="absolute inset-0 bg-espresso/5 rounded-3xl blur-xl group-hover:bg-espresso/10 transition-all duration-500"></div>
+            <div class="relative flex items-center bg-white/60 backdrop-blur-xl border border-white/80 rounded-3xl p-2 shadow-[0_8px_32px_rgba(74,43,24,0.06)] shadow-[inset_0_2px_0_0_rgba(255,255,255,0.8)] focus-within:ring-4 focus-within:ring-espresso/10 transition-all duration-500">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-espresso/40 ml-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+              <input 
+                v-model="searchQuery"
+                type="text" 
+                placeholder="Search your recipes..." 
+                class="flex-1 bg-transparent border-none px-4 py-4 focus:outline-none text-espresso placeholder-espresso/40 font-medium text-lg tracking-tight"
+              />
+              <button @click="isModalOpen = true" class="bg-matcha text-espresso px-6 py-4 rounded-2xl font-semibold text-[0.65rem] uppercase tracking-[0.2em] hover:bg-matcha/90 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 active:scale-95 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+                New
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex items-center justify-center gap-2 flex-wrap mt-8">
+             <button 
+               @click="activeTag = ''"
+               :class="[
+                 (!activeTag) ? 'bg-espresso text-cream shadow-md' : 'text-espresso/60 hover:bg-espresso/5',
+                 'px-5 py-2 rounded-full text-[0.6rem] uppercase tracking-[0.2em] font-semibold transition-all duration-300'
+               ]"
+             >
+               All
+             </button>
+             <button 
+               v-for="tag in tags" 
+               :key="tag"
+               @click="activeTag = tag"
+               :class="[
+                 (activeTag === tag) ? 'bg-espresso text-cream shadow-md' : 'text-espresso/60 hover:bg-espresso/5',
+                 'px-5 py-2 rounded-full text-[0.6rem] uppercase tracking-[0.2em] font-semibold transition-all duration-300'
+               ]"
+             >
+               {{ tag }}
+             </button>
+          </div>
         </div>
       </section>
 
-      <!-- RECIPES GRID -->
-      <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        
-        <!-- Create Button -->
-        <button @click="isModalOpen = true" class="group flex flex-col items-center justify-center h-[520px] rounded-[3.5rem] border-2 border-dashed border-espresso/15 bg-espresso/5 text-espresso/40 hover:bg-espresso/10 hover:border-espresso/30 transition-all duration-500">
-           <div class="w-14 h-14 rounded-full border-2 border-espresso/10 flex items-center justify-center mb-8 bg-white/20 group-hover:scale-110 transition-transform">
-             <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
-           </div>
-           <span class="font-sans font-black text-xs uppercase tracking-[0.4em]">Initialize New</span>
-        </button>
-
-        <!-- Dynamic Recipes -->
+      <!-- RECIPES GRID (Editorial Masonry Style) -->
+      <section class="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-10">
         <div 
-          v-for="recipe in filteredRecipes" 
+          v-for="(recipe, index) in filteredRecipes" 
           :key="recipe.id" 
           @click="navigateTo(`/recipes/${recipe.id}`)"
-          class="group flex flex-col h-[520px] bg-white/40 rounded-[3.5rem] border-2 border-white/60 overflow-hidden cursor-pointer shadow-2xl shadow-espresso/5 transition-all duration-700 hover:border-espresso/20"
+          class="recipe-card group relative flex flex-col bg-white/40 border border-white/60 rounded-[2rem] overflow-hidden cursor-pointer shadow-[0_8px_24px_rgba(74,43,24,0.04)] shadow-[inset_0_2px_0_0_rgba(255,255,255,0.6)] hover:shadow-[0_20px_40px_rgba(74,43,24,0.12)] hover:-translate-y-2 transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]"
+          :class="[
+             index % 5 === 0 ? 'lg:col-span-8 lg:flex-row h-[400px] md:h-[500px]' : 
+             index % 5 === 1 ? 'lg:col-span-4 h-[400px] md:h-[500px]' : 
+             index % 5 === 2 ? 'lg:col-span-4 h-[450px]' :
+             index % 5 === 3 ? 'lg:col-span-4 h-[450px]' :
+                               'lg:col-span-4 h-[450px]'
+          ]"
         >
-           <div class="h-80 overflow-hidden relative border-b border-espresso/5">
-              <img :src="recipe.imageUrl || '/img/matcha.jpg'" :alt="recipe.title" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-              <div class="absolute top-6 right-6 flex items-center gap-2">
-                 <span class="bg-espresso/80 backdrop-blur-md text-matcha px-4 py-2 rounded-full font-sans font-black text-[0.6rem] uppercase tracking-widest shadow-xl shadow-black/10">
-                   {{ recipe.tag }}
-                 </span>
+          <!-- Image Section -->
+          <div class="relative overflow-hidden" :class="[index % 5 === 0 ? 'lg:w-1/2 h-full' : 'w-full h-3/5']">
+            <div class="absolute inset-0 bg-espresso/10 z-10 group-hover:opacity-0 transition-opacity duration-700"></div>
+            <img :src="recipe.imageUrl || '/img/matcha.jpg'" :alt="recipe.title" class="w-full h-full object-cover transform scale-105 group-hover:scale-110 transition-transform duration-1000 ease-out" />
+            
+            <div class="absolute top-6 left-6 z-20">
+               <span class="bg-cream/90 backdrop-blur-md text-espresso px-3 py-1.5 rounded-lg font-semibold text-[0.55rem] uppercase tracking-[0.2em] shadow-sm">
+                 {{ recipe.tag }}
+               </span>
+            </div>
+          </div>
+          
+          <!-- Content Section -->
+          <div class="p-8 md:p-10 flex flex-col justify-between flex-1" :class="[index % 5 === 0 ? 'lg:w-1/2' : '']">
+            <div>
+              <div class="flex items-center gap-3 mb-4 font-semibold text-[0.55rem] uppercase tracking-[0.2em] text-espresso/40">
+                <span class="flex items-center gap-1"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {{ recipe.cookingTime || '45 Min' }}</span>
+                <span class="w-1 h-1 rounded-full bg-espresso/20"></span>
+                <span>{{ recipe.ingredients?.length || 5 }} Ingredients</span>
               </div>
-           </div>
-
-           <div class="p-8 flex flex-col flex-1 bg-linear-to-b from-white/10 to-white/30">
-             <div class="flex items-center gap-4 mb-3 font-sans font-black text-[0.65rem] uppercase tracking-[0.3em] text-espresso/40">
-                <span class="text-espresso/60 px-3 py-1 bg-espresso/5 rounded-lg border border-espresso/5">{{ recipe.cookingTime || 'Active' }}</span>
-                <span class="w-1.5 h-1.5 rounded-full bg-espresso/10"></span>
-                <span>{{ recipe.ingredients?.length || 0 }} Ingredients</span>
-             </div>
-             
-             <h3 class="text-2xl text-espresso mb-3 font-normal leading-[1.15] tracking-tight group-hover:text-espresso/70 transition-colors">
-               {{ recipe.title }}
-             </h3>
-             
-             <p class="text-espresso/60 font-sans font-bold text-[0.85rem] leading-relaxed line-clamp-2 italic">
-               "{{ recipe.description || 'No description provided.' }}"
-             </p>
-           </div>
+              <h3 class="text-3xl md:text-4xl font-serif text-espresso leading-[1.1] tracking-tight mb-4 group-hover:text-matcha transition-colors duration-300">
+                {{ recipe.title }}
+              </h3>
+              <p class="text-espresso/60 text-sm leading-relaxed font-light line-clamp-2 md:line-clamp-3">
+                {{ recipe.description || 'A beautiful, curated recipe perfect for your collection. Discover the intricate flavors and instructions inside.' }}
+              </p>
+            </div>
+            
+            <div class="mt-8 flex items-center text-espresso font-semibold text-[0.65rem] uppercase tracking-[0.2em] opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
+              View Recipe <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4-4m-4 4H3"/></svg>
+            </div>
+          </div>
         </div>
       </section>
 
-      <footer class="mt-48 pb-16 text-center border-t border-espresso/5 pt-16">
-        <p class="font-sans font-black text-[0.6rem] uppercase tracking-[0.6em] text-espresso/30">Clove &reg; &bull; 2026</p>
-      </footer>
+      <!-- Empty State -->
+      <div v-if="filteredRecipes.length === 0" class="w-full py-32 flex flex-col items-center justify-center text-center opacity-50">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 text-espresso/30 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+        <p class="font-serif text-3xl text-espresso mb-2">No recipes found.</p>
+        <p class="text-espresso/60 font-light">Try adjusting your search or add a new one.</p>
+      </div>
+
     </main>
+
+    <!-- FOOTER -->
+    <footer class="w-full py-12 border-t border-espresso/5 flex flex-col items-center justify-center relative z-10 bg-cream/50 backdrop-blur-lg">
+      <p class="font-serif italic text-2xl text-espresso/40 mb-4">Clove.</p>
+      <p class="font-semibold text-[0.55rem] uppercase tracking-[0.4em] text-espresso/30">Crafted with precision &bull; 2026</p>
+    </footer>
 
     <RecipeModal 
       :is-open="isModalOpen" 
@@ -172,7 +156,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
+import gsap from 'gsap'
 import RecipeModal from '~/components/RecipeModal.vue'
 
 definePageMeta({
@@ -180,21 +165,18 @@ definePageMeta({
 })
 
 const user = ref<{ name: string, email: string } | null>(null)
-const isMenuVisible = ref(false)
 const isModalOpen = ref(false)
 const recipes = ref<any[]>([])
 const tags = ref<string[]>([])
 const searchQuery = ref('')
 const activeTag = ref('')
 
-const toggleMenu = () => {
-  isMenuVisible.value = !isMenuVisible.value
-}
-
 const fetchRecipes = async () => {
   try {
     const data = await $fetch<any[]>('/api/recipes')
     recipes.value = data
+    // Trigger entrance animation for recipes
+    nextTick(() => animateCards())
   } catch (e) {
     console.error('Failed to fetch recipes', e)
   }
@@ -227,7 +209,48 @@ const handleLogout = async () => {
   }
 }
 
+// GSAP Animations
+const animateHero = () => {
+  const tl = gsap.timeline()
+  
+  // Nav items
+  tl.fromTo('.nav-item', 
+    { y: -20, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out' }
+  )
+  
+  // Hero subtitle
+  tl.fromTo('.hero-subtitle',
+    { y: 20, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' },
+    '-=0.6'
+  )
+  
+  // Hero title lines
+  tl.fromTo('.hero-title-line',
+    { y: 150, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1.2, stagger: 0.15, ease: 'expo.out' },
+    '-=0.6'
+  )
+  
+  // Search bar
+  tl.fromTo('.hero-search',
+    { y: 30, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1, ease: 'power3.out' },
+    '-=0.8'
+  )
+}
+
+const animateCards = () => {
+  gsap.fromTo('.recipe-card',
+    { y: 60, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out', clearProps: 'all' }
+  )
+}
+
 onMounted(async () => {
+  animateHero() // Run hero animation immediately
+  
   const { data } = await useFetch<{ user: any }>('/api/auth/me')
   if (data.value?.user) {
     user.value = data.value.user
@@ -244,5 +267,12 @@ onMounted(async () => {
   -webkit-box-orient: vertical;  
   overflow: hidden;
   line-clamp: 2;
+}
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+  line-clamp: 3;
 }
 </style>

@@ -1,148 +1,121 @@
 <template>
-  <div class="flex flex-col md:flex-row w-full h-dvh overflow-hidden font-serif selection:bg-white/30">
+  <div class="flex flex-col md:flex-row w-full h-dvh overflow-hidden bg-cream font-sans selection:bg-matcha/30 selection:text-espresso relative">
+    <!-- Noise overlay -->
+    <div class="pointer-events-none fixed inset-0 z-50 opacity-[0.04] mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
     
-    <!-- LOGIN PANEL (Matcha) -->
+    <!-- Left Panel (Login) -->
     <div 
-      class="relative flex items-center justify-center transition-all duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group overflow-hidden"
+      class="relative flex-1 flex items-center justify-center transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] cursor-pointer group overflow-hidden border-b md:border-b-0 md:border-r border-espresso/10"
       :class="[
-        activePanel === 'login' ? 'flex-1' : 'basis-16 md:basis-24 brightness-90 grayscale-20',
-        'bg-matcha bg-[url(/img/matcha.jpg)] bg-cover bg-center'
+        activePanel === 'login' ? 'md:grow-[1.5]' : 'md:grow-[0.5] brightness-75 grayscale-[0.2]',
       ]"
       @click="activePanel !== 'login' ? activePanel = 'login' : null"
     >
-       <div 
-         class="absolute inset-x-0 inset-y-0 flex items-center justify-center transition-all duration-500 pointer-events-none"
-         :class="activePanel === 'register' ? 'opacity-100 bg-white/25 delay-300' : 'opacity-0'"
-       >
-         <div class="text-espresso drop-shadow-[0_4px_16px_rgba(0,0,0,1)] tracking-[0.5em] font-black uppercase md:-rotate-90 text-xl md:text-3xl whitespace-nowrap">Login</div>
-       </div>
+      <!-- Background Image with Overlay -->
+      <div class="absolute inset-0 bg-matcha/20 z-0"></div>
+      <img src="/img/matcha.jpg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-110" alt="Matcha" />
+      <div class="absolute inset-0 bg-linear-to-b from-espresso/40 to-espresso/80 md:from-transparent md:to-espresso/60 z-1"></div>
 
-       <Transition
-         appear
-         @before-enter="onBeforeEnter"
-         @enter="onEnter"
-         @leave="onLeave"
-         :css="false"
-       >
-         <div 
-           v-if="activePanel === 'login'"
-           class="absolute inset-x-0 inset-y-0 flex items-center justify-center pointer-events-auto z-10"
-         >
-           <div class="glass-panel bg-white/30 p-8 md:p-14 rounded-[3rem] shadow-2xl w-full max-w-md mx-6 border-[1.5px] border-white/40 cursor-auto" @click.stop>
-             <div class="form-item">
-               <h2 class="text-4xl text-espresso mb-2 tracking-wide font-normal">Welcome Back</h2>
-               <p class="text-espresso/80 mb-8 font-sans font-medium">Enter your details to access your recipes.</p>
-             </div>
-             
-             <form class="space-y-4 font-sans" @submit.prevent="handleLogin">
-               <div class="group/input form-item">
-                 <label class="block text-xs font-bold uppercase tracking-widest text-espresso/70 mb-1 ml-2 transition-colors group-focus-within/input:text-espresso">Email</label>
-                 <input v-model="loginForm.email" type="email" required class="w-full bg-white/40 border-[1.5px] border-white/50 rounded-3xl px-6 py-4 focus:outline-none focus:bg-white/60 focus:border-espresso/80 text-espresso placeholder-espresso/40 transition-all font-medium shadow-sm" placeholder="Virgile@clove.be" />
-               </div>
-               <div class="group/input form-item">
-                 <label class="block text-xs font-bold uppercase tracking-widest text-espresso/70 mb-1 ml-2 transition-colors group-focus-within/input:text-espresso">Password</label>
-                 <input v-model="loginForm.password" type="password" required class="w-full bg-white/40 border-[1.5px] border-white/50 rounded-3xl px-6 py-4 focus:outline-none focus:bg-white/60 focus:border-espresso/80 text-espresso placeholder-espresso/40 transition-all font-medium shadow-sm" placeholder="••••••••" />
-               </div>
-               <button :disabled="loading" class="form-item w-full bg-espresso text-matcha font-bold tracking-widest uppercase rounded-3xl py-4 mt-6 hover:bg-espresso/90 transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50">
-                 {{ loading ? 'Signing In...' : 'Sign In' }}
-                 <svg v-if="!loading" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-               </button>
-             </form>
-             
-             <!-- Switch to Register button -->
-             <div class="form-item mt-8 text-center text-sm font-sans font-medium text-espresso/70">
-               New around here? 
-               <button @click="activePanel = 'register'" class="font-bold text-espresso ml-1 hover:underline decoration-2 underline-offset-4 transition-all">Create an account</button>
-             </div>
+      <!-- Vertical Label -->
+      <div 
+        class="absolute inset-0 flex items-center justify-center transition-all duration-700 pointer-events-none z-10"
+        :class="activePanel === 'login' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'"
+      >
+        <div class="text-cream font-serif italic text-4xl md:text-6xl md:-rotate-90 tracking-tighter drop-shadow-2xl">Login.</div>
+      </div>
 
-             <!-- Message -->
-             <div v-if="message && activePanel === 'login'" class="mt-4 text-center font-bold text-xs uppercase" :class="message.type === 'error' ? 'text-red-700' : 'text-green-700'">
-               {{ message.text }}
-             </div>
-           </div>
-         </div>
-       </Transition>
+      <!-- Form Content -->
+      <Transition @before-enter="onBeforeEnter" @enter="onEnter" @leave="onLeave" :css="false">
+        <div v-if="activePanel === 'login'" class="relative z-20 w-full max-w-md px-8">
+          <div class="glass-panel bg-white/10 backdrop-blur-3xl p-10 md:p-14 rounded-[2.5rem] border border-white/20 shadow-2xl shadow-black/20 ring-1 ring-white/10">
+            <div class="form-item overflow-hidden mb-8 text-center">
+              <h2 class="text-5xl md:text-6xl font-serif text-cream leading-none tracking-tight mb-4">Welcome back.</h2>
+              <p class="text-cream/60 font-medium text-sm tracking-wide uppercase">Your recipes are waiting.</p>
+            </div>
+
+            <form class="space-y-5" @submit.prevent="handleLogin">
+              <div class="form-item space-y-1.5">
+                <label class="block text-[0.6rem] font-bold uppercase tracking-[0.2em] text-cream/40 ml-1">Email</label>
+                <input v-model="loginForm.email" type="email" required class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 focus:outline-none focus:bg-white/20 focus:border-white/40 text-cream placeholder-cream/20 transition-all font-medium" placeholder="chef@clove.be" />
+              </div>
+              <div class="form-item space-y-1.5">
+                <label class="block text-[0.6rem] font-bold uppercase tracking-[0.2em] text-cream/40 ml-1">Password</label>
+                <input v-model="loginForm.password" type="password" required class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 focus:outline-none focus:bg-white/20 focus:border-white/40 text-cream placeholder-cream/20 transition-all font-medium" placeholder="••••••••" />
+              </div>
+              <button :disabled="loading" class="form-item w-full bg-matcha text-espresso font-bold text-[0.65rem] uppercase tracking-[0.3em] rounded-2xl py-5 mt-8 hover:bg-matcha/90 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-95 disabled:opacity-50">
+                {{ loading ? 'Authenticating...' : 'Sign In' }}
+              </button>
+            </form>
+
+            <div class="form-item mt-10 text-center">
+              <button @click="activePanel = 'register'" class="text-cream/40 hover:text-cream text-[0.6rem] font-bold uppercase tracking-[0.2em] transition-colors decoration-matcha/30 underline underline-offset-8">New here? Create account</button>
+            </div>
+          </div>
+        </div>
+      </Transition>
     </div>
 
-
-    <!-- REGISTER PANEL (Espresso) -->
+    <!-- Right Panel (Register) -->
     <div 
-      class="relative flex items-center justify-center transition-all duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-pointer group overflow-hidden"
+      class="relative flex-1 flex items-center justify-center transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] cursor-pointer group overflow-hidden"
       :class="[
-        activePanel === 'register' ? 'flex-1' : 'basis-16 md:basis-24 brightness-90 grayscale-20',
-        'bg-espresso bg-[url(/img/espresso.jpeg)] bg-cover bg-center'
+        activePanel === 'register' ? 'md:grow-[1.5]' : 'md:grow-[0.5] brightness-75 grayscale-[0.2]',
       ]"
       @click="activePanel !== 'register' ? activePanel = 'register' : null"
     >
-       <div 
-         class="absolute inset-x-0 inset-y-0 flex items-center justify-center transition-all duration-500 pointer-events-none"
-         :class="activePanel === 'login' ? 'opacity-100 bg-black/25 delay-300' : 'opacity-0'"
-       >
-         <div class="text-matcha drop-shadow-[0_0_20px_rgba(255,255,255,1)] tracking-[0.5em] font-black uppercase md:-rotate-90 text-xl md:text-3xl whitespace-nowrap">Register</div>
-       </div>
+      <!-- Background Image with Overlay -->
+      <div class="absolute inset-0 bg-espresso/20 z-0"></div>
+      <img src="/img/espresso.jpeg" class="absolute inset-0 w-full h-full object-cover transition-transform duration-[3000ms] group-hover:scale-110" alt="Espresso" />
+      <div class="absolute inset-0 bg-linear-to-b from-matcha/40 to-matcha/80 md:from-transparent md:to-matcha/60 z-1"></div>
 
-       <Transition
-         appear
-         @before-enter="onBeforeEnter"
-         @enter="onEnter"
-         @leave="onLeave"
-         :css="false"
-       >
-         <div 
-           v-if="activePanel === 'register' && !currentUser"
-           class="absolute inset-x-0 inset-y-0 flex items-center justify-center pointer-events-auto z-10"
-         >
-           <div class="glass-panel bg-black/25 p-8 md:p-14 rounded-[3rem] shadow-2xl w-full max-w-md mx-6 border-[1.5px] border-white/20 cursor-auto" @click.stop>
-             <div class="form-item">
-               <h2 class="text-4xl text-matcha mb-2 tracking-wide font-normal">Join Clove</h2>
-               <p class="text-matcha/80 mb-8 font-sans font-medium">Start your digital recipe book today.</p>
-             </div>
-             
-             <form class="space-y-4 font-sans" @submit.prevent="handleRegister">
-               <div class="group/input form-item">
-                 <label class="block text-xs font-bold uppercase tracking-widest text-matcha/70 mb-1 ml-2 transition-colors group-focus-within/input:text-matcha">Name</label>
-                 <input v-model="registerForm.name" type="text" required class="w-full bg-white/20 border-[1.5px] border-white/30 rounded-3xl px-6 py-3.5 focus:outline-none focus:bg-white/30 focus:border-matcha/80 text-white placeholder-white/50 transition-all font-medium shadow-sm" placeholder="Virgile Bigaré" />
-               </div>
-               <div class="group/input form-item">
-                 <label class="block text-xs font-bold uppercase tracking-widest text-matcha/70 mb-1 ml-2 transition-colors group-focus-within/input:text-matcha">Email</label>
-                 <input v-model="registerForm.email" type="email" required class="w-full bg-white/20 border-[1.5px] border-white/30 rounded-3xl px-6 py-3.5 focus:outline-none focus:bg-white/30 focus:border-matcha/80 text-white placeholder-white/50 transition-all font-medium shadow-sm" placeholder="Virgile@clove.be" />
-               </div>
-               <div class="group/input form-item">
-                 <label class="block text-xs font-bold uppercase tracking-widest text-matcha/70 mb-1 ml-2 transition-colors group-focus-within/input:text-matcha">Password</label>
-                 <input v-model="registerForm.password" type="password" required class="w-full bg-white/20 border-[1.5px] border-white/30 rounded-3xl px-6 py-3.5 focus:outline-none focus:bg-white/30 focus:border-matcha/80 text-white placeholder-white/50 transition-all font-medium shadow-sm" placeholder="••••••••" />
-               </div>
-               <button :disabled="loading" class="form-item w-full bg-matcha text-espresso font-bold tracking-widest uppercase rounded-3xl py-4 mt-6 hover:bg-matcha/90 transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 flex items-center justify-center gap-2 disabled:opacity-50">
-                 {{ loading ? 'Creating...' : 'Create Account' }}
-                 <svg v-if="!loading" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-               </button>
-             </form>
+      <!-- Vertical Label -->
+      <div 
+        class="absolute inset-0 flex items-center justify-center transition-all duration-700 pointer-events-none z-10"
+        :class="activePanel === 'register' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'"
+      >
+        <div class="text-cream font-serif italic text-4xl md:text-6xl md:-rotate-90 tracking-tighter drop-shadow-2xl">Join Us.</div>
+      </div>
 
-             <!-- Switch to Login button -->
-             <div class="form-item mt-6 text-center text-sm font-sans font-medium text-matcha/70">
-               Already have an account? 
-               <button @click="activePanel = 'login'" class="font-bold text-matcha ml-1 hover:underline decoration-2 underline-offset-4 transition-all">Log in</button>
-             </div>
-
-             <!-- Message -->
-             <div v-if="message && activePanel === 'register'" class="mt-4 text-center font-bold text-xs uppercase" :class="message.type === 'error' ? 'text-red-400' : 'text-green-400'">
-               {{ message.text }}
-             </div>
-           </div>
-         </div>
-
-         <!-- Logged in state for current user -->
-         <div v-else-if="currentUser" class="absolute inset-x-0 inset-y-0 flex items-center justify-center pointer-events-auto z-10">
-            <div class="glass-panel bg-black/25 p-8 md:p-14 rounded-[3rem] shadow-2xl w-full max-w-md mx-6 border-[1.5px] border-white/20 text-center">
-              <div class="form-item">
-                <h2 class="text-4xl text-matcha mb-2 tracking-wide font-normal">Welcome, {{ (currentUser as any).name }}</h2>
-                <p class="text-matcha/80 mb-8 font-sans font-medium">You are now connected to your kitchen.</p>
-                <button @click="handleLogout" class="w-full bg-matcha text-espresso font-bold tracking-widest uppercase rounded-3xl py-4 hover:bg-matcha/90 transition-all hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95">
-                  Sign Out
-                </button>
-              </div>
+      <!-- Form Content -->
+      <Transition @before-enter="onBeforeEnter" @enter="onEnter" @leave="onLeave" :css="false">
+        <div v-if="activePanel === 'register'" class="relative z-20 w-full max-w-md px-8">
+          <div class="glass-panel bg-white/10 backdrop-blur-3xl p-10 md:p-14 rounded-[2.5rem] border border-white/20 shadow-2xl shadow-black/20 ring-1 ring-white/10">
+            <div class="form-item overflow-hidden mb-8 text-center">
+              <h2 class="text-5xl md:text-6xl font-serif text-cream leading-none tracking-tight mb-4">Join Clove.</h2>
+              <p class="text-cream/60 font-medium text-sm tracking-wide uppercase">Start your digital collection.</p>
             </div>
-         </div>
-       </Transition>
+
+            <form class="space-y-5" @submit.prevent="handleRegister">
+              <div class="form-item space-y-1.5">
+                <label class="block text-[0.6rem] font-bold uppercase tracking-[0.2em] text-cream/40 ml-1">Name</label>
+                <input v-model="registerForm.name" type="text" required class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 focus:outline-none focus:bg-white/20 focus:border-white/40 text-cream placeholder-cream/20 transition-all font-medium" placeholder="Chef Virgile" />
+              </div>
+              <div class="form-item space-y-1.5">
+                <label class="block text-[0.6rem] font-bold uppercase tracking-[0.2em] text-cream/40 ml-1">Email</label>
+                <input v-model="registerForm.email" type="email" required class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 focus:outline-none focus:bg-white/20 focus:border-white/40 text-cream placeholder-cream/20 transition-all font-medium" placeholder="chef@clove.be" />
+              </div>
+              <div class="form-item space-y-1.5">
+                <label class="block text-[0.6rem] font-bold uppercase tracking-[0.2em] text-cream/40 ml-1">Password</label>
+                <input v-model="registerForm.password" type="password" required class="w-full bg-white/10 border border-white/20 rounded-2xl px-6 py-4 focus:outline-none focus:bg-white/20 focus:border-white/40 text-cream placeholder-cream/20 transition-all font-medium" placeholder="••••••••" />
+              </div>
+              <button :disabled="loading" class="form-item w-full bg-cream text-espresso font-bold text-[0.65rem] uppercase tracking-[0.3em] rounded-2xl py-5 mt-8 hover:bg-cream/90 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 active:scale-95 disabled:opacity-50">
+                {{ loading ? 'Creating...' : 'Create Account' }}
+              </button>
+            </form>
+
+            <div class="form-item mt-10 text-center">
+              <button @click="activePanel = 'login'" class="text-cream/40 hover:text-cream text-[0.6rem] font-bold uppercase tracking-[0.2em] transition-colors decoration-cream/30 underline underline-offset-8">Have an account? Log in</button>
+            </div>
+          </div>
+        </div>
+      </Transition>
+    </div>
+
+    <!-- Error/Success Messages -->
+    <div v-if="message" class="fixed bottom-10 left-1/2 -translate-x-1/2 z-[60]">
+      <div class="bg-espresso text-cream px-8 py-4 rounded-2xl shadow-2xl border border-white/10 backdrop-blur-xl font-medium text-xs uppercase tracking-widest">
+        {{ message.text }}
+      </div>
     </div>
   </div>
 </template>
@@ -160,18 +133,14 @@ const loginForm = ref({ email: '', password: '' })
 const registerForm = ref({ name: '', email: '', password: '' })
 
 onMounted(async () => {
-  // Fetch current user
   try {
     const data = await $fetch<{ user: any }>('/api/auth/me')
     if (data?.user) {
       currentUser.value = data.user
-      navigateTo('/home') // Redirect if already logged in
+      navigateTo('/home')
     }
-  } catch (e) {
-    // No user logged in
-  }
+  } catch (e) {}
 
-  // Use a slight delay to catch browser/extension-level autofocus
   setTimeout(() => {
     if (document.activeElement instanceof HTMLInputElement) {
       document.activeElement.blur()
@@ -194,6 +163,7 @@ const handleLogin = async () => {
     }
   } catch (err: any) {
     message.value = { text: err.data?.statusMessage || 'Login failed', type: 'error' }
+    setTimeout(() => message.value = null, 3000)
   } finally {
     loading.value = false
   }
@@ -214,84 +184,35 @@ const handleRegister = async () => {
     }
   } catch (err: any) {
     message.value = { text: err.data?.statusMessage || 'Registration failed', type: 'error' }
+    setTimeout(() => message.value = null, 3000)
   } finally {
     loading.value = false
   }
 }
 
-const handleLogout = async () => {
-  await $fetch('/api/auth/logout', { method: 'POST' })
-  currentUser.value = null
-  message.value = null
-  activePanel.value = 'login'
-}
-
+// GSAP Animations
 const onBeforeEnter = (el: Element) => {
-  const container = el as HTMLElement
-  const glass = container.querySelector('.glass-panel') as HTMLElement
-  const items = container.querySelectorAll('.form-item')
-  
-  gsap.set(container, { opacity: 1 }) // Container is visible immediately
-  if (glass) {
-    gsap.set(glass, { 
-      y: 50, 
-      opacity: 0, 
-      scale: 0.9,
-      '--blur': '0px',
-      isolation: 'isolate'
-    })
-  }
-  if (items.length) {
-    gsap.set(items, { opacity: 0, y: 15 })
-  }
+  const glass = (el as HTMLElement).querySelector('.glass-panel')
+  const items = (el as HTMLElement).querySelectorAll('.form-item')
+  gsap.set(glass, { opacity: 0, y: 30, scale: 0.95 })
+  gsap.set(items, { opacity: 0, y: 20 })
 }
 
 const onEnter = (el: Element, done: () => void) => {
-  const container = el as HTMLElement
-  const glass = container.querySelector('.glass-panel') as HTMLElement
-  const items = container.querySelectorAll('.form-item')
-  
-  const tl = gsap.timeline({ 
-    onComplete: done,
-    delay: 0.4 // Wait for panel expansion
-  })
-  
-  tl.to(glass, {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    duration: 0.8,
-    ease: 'power4.out'
-  })
-  .to(glass, {
-    '--blur': '24px',
-    duration: 1,
-    ease: 'power2.inOut'
-  }, '-=0.4')
-  .to(items, {
-    opacity: 1,
-    y: 0,
-    duration: 0.6,
-    stagger: 0.1,
-    ease: 'power3.out'
-  }, '-=0.6')
+  const glass = (el as HTMLElement).querySelector('.glass-panel')
+  const items = (el as HTMLElement).querySelectorAll('.form-item')
+  const tl = gsap.timeline({ onComplete: done })
+  tl.to(glass, { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: 'expo.out' })
+    .to(items, { opacity: 1, y: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out' }, '-=0.8')
 }
 
 const onLeave = (el: Element, done: () => void) => {
-  gsap.to(el, {
-    opacity: 0,
-    scale: 0.95,
-    duration: 0.4,
-    ease: 'power2.in',
-    onComplete: done
-  })
+  gsap.to(el, { opacity: 0, scale: 0.9, duration: 0.5, ease: 'power2.in', onComplete: done })
 }
 </script>
 
 <style scoped>
 .glass-panel {
-  backdrop-filter: blur(var(--blur, 0px));
-  -webkit-backdrop-filter: blur(var(--blur, 0px));
-  will-change: backdrop-filter, transform, opacity;
+  will-change: transform, opacity;
 }
 </style>

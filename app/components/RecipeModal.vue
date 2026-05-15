@@ -173,7 +173,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch, onUnmounted } from 'vue'
 
 const props = defineProps<{
   isOpen: boolean
@@ -204,6 +204,22 @@ const initialForm = {
 }
 
 const form = reactive({ ...initialForm })
+
+watch(() => props.isOpen, (isOpen) => {
+  if (process.client) {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+  }
+}, { immediate: true })
+
+onUnmounted(() => {
+  if (process.client) {
+    document.body.style.overflow = ''
+  }
+})
 
 const handleFileChange = (e: Event) => {
   const target = e.target as HTMLInputElement
