@@ -1,5 +1,5 @@
-import { eq } from 'drizzle-orm';
-import { ingredients, recipeIngredients, recipes } from '../../database/schema';
+import { eq, or, and, sql } from 'drizzle-orm';
+import { ingredients, recipeIngredients, recipes, savedRecipes, users } from '../../database/schema';
 import { db } from '../../utils/db';
 
 export default defineEventHandler(async (event) => {
@@ -8,13 +8,36 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' });
   }
 
-  const userRecipes = await db.select().from(recipes).where(eq(recipes.userId, user.id)).all();
+  // 1. Get owned recipes
+  const owned = await db.select({
+      recipe: recipes,
+      creatorName: users.name
+    })
+    .from(recipes)
+    .innerJoin(users, eq(users.id, recipes.userId))
+    .where(eq(recipes.userId, user.id))
+    .all();
 
-  // For each recipe, get ingredients
-  // This is not the most efficient way (n+1), but OK for start
-  // In a real app we'd join once and group by recipeId
+  // 2. Get saved recipes
+  const saved = await db.select({
+      recipe: recipes,
+      creatorName: users.name
+    })
+    .from(savedRecipes)
+    .innerJoin(recipes, eq(recipes.id, savedRecipes.recipeId))
+    .innerJoin(users, eq(users.id, recipes.userId))
+    .where(eq(savedRecipes.userId, user.id))
+    .all();
+
+  // Merge and deduplicate
+  const combined = [...owned, ...saved];
+  const uniqueRecipes = Array.from(new Map(combined.map(item => [item.recipe.id, item])).values());
+
   const result = [];
-  for (const recipe of userRecipes) {
+  for (const item of uniqueRecipes) {
+    const { recipe, creatorName } = item;
+    
+    // Ingredients
     const recipeIngs = await db.select({
         id: ingredients.id,
         name: ingredients.name,
@@ -25,9 +48,18 @@ export default defineEventHandler(async (event) => {
       .where(eq(recipeIngredients.recipeId, recipe.id))
       .all();
 
+    // Save count
+    const saveStats = await db.select({ count: sql<number>`count(*)` })
+      .from(savedRecipes)
+      .where(eq(savedRecipes.recipeId, recipe.id))
+      .get();
+
     result.push({
       ...recipe,
-      ingredients: recipeIngs
+      creatorName,
+      ingredients: recipeIngs,
+      isOwner: recipe.userId === user.id,
+      saveCount: saveStats?.count || 0
     });
   }
 

@@ -31,3 +31,10 @@ export const recipeIngredients = sqliteTable('recipe_ingredients', {
   ingredientId: text('ingredient_id').notNull().references(() => ingredients.id),
   amount: text('amount'), // e.g. "200g", "2 pieces"
 });
+
+export const savedRecipes = sqliteTable('saved_recipes', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text('user_id').notNull().references(() => users.id),
+  recipeId: text('recipe_id').notNull().references(() => recipes.id, { onDelete: 'cascade' }),
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(new Date()),
+});

@@ -101,9 +101,13 @@
             <div class="absolute inset-0 bg-espresso/10 z-10 group-hover:opacity-0 transition-opacity duration-700"></div>
             <img :src="recipe.imageUrl || '/img/matcha.jpg'" :alt="recipe.title" class="w-full h-full object-cover transform scale-105 group-hover:scale-110 transition-transform duration-1000 ease-out" />
             
-            <div class="absolute top-6 left-6 z-20">
-               <span class="bg-cream/90 backdrop-blur-md text-espresso px-3 py-1.5 rounded-lg font-semibold text-[0.55rem] uppercase tracking-[0.2em] shadow-sm">
+            <div class="absolute top-6 left-6 z-20 flex flex-col gap-2">
+               <span class="bg-cream/90 backdrop-blur-md text-espresso px-3 py-1.5 rounded-lg font-semibold text-[0.55rem] uppercase tracking-[0.2em] shadow-sm w-fit">
                  {{ recipe.tag }}
+               </span>
+               <span v-if="!recipe.isOwner" class="bg-espresso/80 backdrop-blur-md text-cream px-3 py-1.5 rounded-lg font-semibold text-[0.5rem] uppercase tracking-[0.15em] shadow-sm flex items-center gap-1.5 w-fit">
+                 <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path></svg>
+                 By {{ recipe.creatorName }}
                </span>
             </div>
           </div>
@@ -114,7 +118,9 @@
               <div class="flex items-center gap-3 mb-4 font-semibold text-[0.55rem] uppercase tracking-[0.2em] text-espresso/40">
                 <span class="flex items-center gap-1"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> {{ recipe.cookingTime || '45 Min' }}</span>
                 <span class="w-1 h-1 rounded-full bg-espresso/20"></span>
-                <span>{{ recipe.ingredients?.length || 5 }} Ingredients</span>
+                <span>{{ recipe.ingredients?.length || 0 }} Ingredients</span>
+                <span class="w-1 h-1 rounded-full bg-espresso/20"></span>
+                <span class="flex items-center gap-1"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> {{ recipe.saveCount || 0 }} Saves</span>
               </div>
               <h3 class="text-3xl md:text-4xl font-serif text-espresso leading-[1.1] tracking-tight mb-4 group-hover:text-matcha transition-colors duration-300">
                 {{ recipe.title }}

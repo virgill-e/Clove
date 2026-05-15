@@ -1,5 +1,5 @@
 import { eq, and } from 'drizzle-orm';
-import { ingredients, recipeIngredients, recipes } from '../../database/schema';
+import { ingredients, recipeIngredients, recipes, users, savedRecipes } from '../../database/schema';
 import { db } from '../../utils/db';
 
 export default defineEventHandler(async (event) => {
@@ -13,19 +13,20 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Invalid recipe ID' });
   }
 
-  const recipe = await db.select()
+  const recipeData = await db.select({
+      recipe: recipes,
+      creatorName: users.name
+    })
     .from(recipes)
-    .where(
-      and(
-        eq(recipes.id, recipeId),
-        eq(recipes.userId, user.id)
-      )
-    )
+    .innerJoin(users, eq(users.id, recipes.userId))
+    .where(eq(recipes.id, recipeId))
     .get();
 
-  if (!recipe) {
+  if (!recipeData) {
     throw createError({ statusCode: 404, statusMessage: 'Recipe not found' });
   }
+
+  const { recipe, creatorName } = recipeData;
 
   const recipeIngs = await db.select({
       id: ingredients.id,
@@ -37,8 +38,24 @@ export default defineEventHandler(async (event) => {
     .where(eq(recipeIngredients.recipeId, recipe.id))
     .all();
 
+  const isOwner = recipe.userId === user.id;
+  
+  let savedBy: any[] = [];
+  if (isOwner) {
+    savedBy = await db.select({
+        name: users.name,
+      })
+      .from(savedRecipes)
+      .innerJoin(users, eq(users.id, savedRecipes.userId))
+      .where(eq(savedRecipes.recipeId, recipe.id))
+      .all();
+  }
+
   return {
     ...recipe,
-    ingredients: recipeIngs
+    creatorName,
+    ingredients: recipeIngs,
+    isOwner,
+    savedBy // Only populated for owners
   };
 });

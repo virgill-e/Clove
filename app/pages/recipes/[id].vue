@@ -18,6 +18,26 @@
         <h1 class="nav-item text-2xl md:text-3xl font-serif text-espresso tracking-tight leading-none">Clove.</h1>
       </div>
       <div class=" flex items-center gap-4">
+        <!-- Share Button (Visible for all) -->
+        <button 
+          @click="handleShare"
+          class="w-12 h-12 rounded-full border border-espresso/10 flex items-center justify-center text-espresso/40 hover:text-espresso hover:bg-white/60 transition-all duration-300"
+          title="Share Recipe"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+        </button>
+
+        <!-- Save Button (Only if not owner) -->
+        <button 
+          v-if="!isOwner"
+          @click="handleSave"
+          :disabled="isSaving"
+          class="nav-item bg-matcha text-espresso px-6 py-3 rounded-full font-bold text-[0.6rem] uppercase tracking-[0.2em] shadow-lg shadow-matcha/10 hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
+        >
+          {{ isSaving ? 'Saving...' : 'Save to My Kitchen' }}
+        </button>
+
+        <!-- Delete Button (Only if owner) -->
         <button 
           v-if="isOwner"
           @click="handleDelete"
@@ -26,6 +46,8 @@
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
         </button>
+        
+        <!-- Edit Button (Only if owner) -->
         <button 
           v-if="isOwner"
           @click="isModalOpen = true"
@@ -33,9 +55,6 @@
         >
           Edit Recipe
         </button>
-        <div class="w-12 h-12 rounded-full border border-espresso/10 md:flex hidden items-center justify-center nav-item">
-          <svg class="w-4 h-4 text-espresso/40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-        </div>
       </div>
     </header>
 
@@ -43,10 +62,40 @@
       
       <!-- HERO AREA -->
       <section class="mt-12 md:mt-20 mb-20 md:mb-24">
-        <div class="overflow-hidden mb-6">
+        <div class="mb-6 flex items-center gap-4 flex-wrap">
           <span class="hero-item inline-block bg-matcha/20 text-espresso px-4 py-2 rounded-lg font-bold text-[0.6rem] uppercase tracking-[0.3em]">
             {{ recipe.tag }}
           </span>
+          <span v-if="!isOwner" class="hero-item inline-block bg-espresso text-cream px-4 py-2 rounded-lg font-bold text-[0.6rem] uppercase tracking-[0.3em]">
+            Original creation by {{ recipe.creatorName }}
+          </span>
+          
+          <!-- SAVED BY STATS (For owners) -->
+          <div v-if="isOwner && recipe.savedBy?.length > 0" class="hero-item relative group">
+            <div class="flex items-center gap-3 bg-white/40 border border-white/60 px-4 py-1.5 rounded-full shadow-sm cursor-help">
+               <div class="flex -space-x-2">
+                  <div v-for="(saver, i) in recipe.savedBy.slice(0, 3)" :key="i" class="w-6 h-6 rounded-full bg-espresso border border-cream flex items-center justify-center text-[0.45rem] text-cream font-bold uppercase">
+                    {{ saver.name[0] }}
+                  </div>
+               </div>
+               <span class="text-[0.55rem] font-bold uppercase tracking-[0.1em] text-espresso/40">
+                  Saved by {{ recipe.savedBy.length }} {{ recipe.savedBy.length > 1 ? 'Chefs' : 'Chef' }}
+               </span>
+            </div>
+            
+            <!-- Floating List of Names -->
+            <div class="absolute top-full left-0 mt-3 w-56 bg-white/95 backdrop-blur-2xl border border-espresso/5 rounded-3xl shadow-2xl z-50 p-6 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+               <h4 class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-espresso/30 mb-4 pb-3 border-b border-espresso/5">Appreciated by</h4>
+               <ul class="space-y-3">
+                 <li v-for="saver in recipe.savedBy" :key="saver.name" class="flex items-center gap-3">
+                   <div class="w-6 h-6 rounded-full bg-matcha/20 text-espresso flex items-center justify-center text-[0.5rem] font-bold uppercase">
+                     {{ saver.name[0] }}
+                   </div>
+                   <span class="text-xs font-bold text-espresso">{{ saver.name }}</span>
+                 </li>
+               </ul>
+            </div>
+          </div>
         </div>
         
         <div class="overflow-hidden mb-12">
@@ -67,7 +116,7 @@
               </div>
            </div>
            <p class="flex-1 text-lg md:text-xl text-espresso/60 font-light leading-relaxed italic border-l-2 border-matcha/30 pl-8">
-             "{{ recipe.description || 'Discover the intricate flavors and artisanal techniques behind this signature dish from our curated collection.' }}"
+             "{{ recipe.description || 'Discover the intricate flavors and artisanal techniques behind this signature dish.' }}"
            </p>
         </div>
       </section>
@@ -124,7 +173,7 @@
             <div class="relative pt-6 md:pt-10">
                <p class="text-xl md:text-2xl text-espresso/70 leading-[1.6] font-light">
                 {{ step }}
-              </p>
+               </p>
             </div>
           </div>
         </div>
@@ -169,6 +218,7 @@ const route = useRoute()
 const recipe = ref<any>(null)
 const currentUser = ref<any>(null)
 const isModalOpen = ref(false)
+const isSaving = ref(false)
 
 const isOwner = computed(() => {
   return recipe.value && currentUser.value && recipe.value.userId === currentUser.value.id
@@ -207,6 +257,26 @@ const handleDelete = async () => {
   } catch (e) {
     console.error('Failed to delete recipe', e)
   }
+}
+
+const handleSave = async () => {
+  isSaving.value = true
+  try {
+    await $fetch(`/api/recipes/${route.params.id}/save`, {
+      method: 'POST'
+    })
+    alert('Recipe saved to your kitchen!')
+  } catch (e) {
+    console.error('Failed to save recipe', e)
+  } finally {
+    isSaving.value = false
+  }
+}
+
+const handleShare = () => {
+  const url = window.location.href
+  navigator.clipboard.writeText(url)
+  alert('Recipe link copied to clipboard!')
 }
 
 const instructions = computed(() => {
