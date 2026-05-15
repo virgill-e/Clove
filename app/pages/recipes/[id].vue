@@ -1,123 +1,138 @@
 <template>
-  <div class="min-h-screen bg-matcha overflow-x-hidden font-serif selection:bg-espresso/10 selection:text-espresso">
+  <div class="min-h-screen bg-cream text-espresso overflow-x-hidden font-sans selection:bg-matcha/30 selection:text-espresso relative flex flex-col">
+    <!-- Noise overlay -->
+    <div class="pointer-events-none fixed inset-0 z-50 opacity-[0.04] mix-blend-multiply" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.8%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E');"></div>
+    
     <!-- NAVIGATION -->
-    <header class="p-6 md:px-12 md:py-8 flex items-center justify-between bg-matcha/80 backdrop-blur-xl sticky top-0 z-50 border-b border-espresso/10">
-      <button 
-        @click="navigateTo('/home')" 
-        class="flex items-center gap-3 font-sans font-black text-[0.7rem] uppercase tracking-[0.3em] text-espresso/60 hover:text-espresso transition-colors group"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        Back to Gallery
-      </button>
-      
-      <div class="flex items-center gap-6">
-        <h1 class="text-2xl font-normal text-espresso tracking-tight">Clove</h1>
+    <header class="w-full px-8 py-8 md:px-16 md:py-10 flex items-center justify-between z-40 relative">
+      <div class="overflow-hidden">
+        <button 
+          @click="navigateTo('/home')" 
+          class="nav-item flex items-center gap-3 font-semibold text-[0.65rem] uppercase tracking-[0.3em] text-espresso/40 hover:text-espresso transition-colors group"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Back to Kitchen
+        </button>
       </div>
-      
-      <div class="w-24"></div> <!-- Spacer for balance -->
+      <div class="overflow-hidden">
+        <h1 class="nav-item text-2xl md:text-3xl font-serif text-espresso tracking-tight leading-none">Clove.</h1>
+      </div>
+      <div class="w-24 md:w-32"></div> <!-- Spacer -->
     </header>
 
-    <main v-if="recipe" class="max-w-7xl mx-auto px-6 py-12 md:py-20 animate-fade-in">
+    <main v-if="recipe" class="flex-1 w-full max-w-screen-xl mx-auto px-8 md:px-16 pb-32">
       
-      <!-- HERO HEADER -->
-      <header class="max-w-4xl mb-16 md:mb-24">
-         <span class="inline-block bg-espresso/5 border border-espresso/10 text-espresso/60 px-6 py-2 rounded-full font-sans font-black text-[0.65rem] uppercase tracking-[0.3em] mb-8">
-           {{ recipe.tag }}
-         </span>
-         <h2 class="text-5xl md:text-8xl text-espresso font-normal leading-none tracking-tight mb-8">
-           {{ recipe.title }}
-         </h2>
-         <div class="h-1.5 w-24 bg-espresso/10 rounded-full"></div>
-      </header>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+      <!-- HERO AREA -->
+      <section class="mt-12 md:mt-20 mb-20 md:mb-24">
+        <div class="overflow-hidden mb-6">
+          <span class="hero-item inline-block bg-matcha/20 text-espresso px-4 py-2 rounded-lg font-bold text-[0.6rem] uppercase tracking-[0.3em]">
+            {{ recipe.tag }}
+          </span>
+        </div>
         
-        <!-- LARGE IMAGE & SUMMARY -->
-        <div class="lg:col-span-7 flex flex-col gap-12">
-          <div class="aspect-[16/10] lg:aspect-[4/3] rounded-[4rem] overflow-hidden border-2 border-white/60 shadow-2xl shadow-espresso/10 relative group">
-            <img 
-              :src="recipe.imageUrl || '/img/matcha.jpg'" 
-              :alt="recipe.title" 
-              class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-            />
-          </div>
-
-          <div class="bg-white/40 p-12 rounded-[3.5rem] border-2 border-white/60 shadow-xl shadow-espresso/5">
-            <div class="flex items-center gap-8 mb-10 pb-8 border-b border-espresso/5 font-sans font-black text-[0.7rem] uppercase tracking-[0.3em] text-espresso/40">
-               <div class="flex items-center gap-3">
-                 <span class="w-10 h-10 rounded-full bg-espresso/5 border border-espresso/5 flex items-center justify-center">
-                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-espresso/60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                 </span>
-                 <span class="text-espresso/70">{{ recipe.cookingTime || 'Active' }}</span>
-               </div>
-            </div>
-
-            <p class="text-2xl text-espresso/70 italic leading-relaxed font-normal">
-              "{{ recipe.description || 'A timeless selection from the Clove collection, crafted for those who appreciate the essence of flavor.' }}"
-            </p>
-          </div>
+        <div class="overflow-hidden mb-12">
+          <h2 class="hero-item text-6xl md:text-8xl lg:text-[10rem] font-serif text-espresso leading-[0.85] tracking-tighter">
+            {{ recipe.title }}
+          </h2>
         </div>
 
-        <!-- DETAILS: INGREDIENTS & STEPS -->
-        <div class="lg:col-span-5 flex flex-col gap-16">
-          
-          <!-- Ingredients Section -->
-          <section>
-            <div class="flex items-center gap-6 mb-10">
-              <h3 class="text-3xl text-espresso font-normal">Ingredients</h3>
-              <div class="h-px flex-1 bg-espresso/10"></div>
+        <div class="hero-item flex flex-col md:flex-row md:items-center gap-8 md:gap-16 border-t border-espresso/10 pt-10">
+           <div class="flex items-center gap-10 font-semibold text-[0.65rem] uppercase tracking-[0.3em] text-espresso/40">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                {{ recipe.cookingTime || '45 Min' }}
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+                {{ recipe.ingredients?.length || 0 }} Ingredients
+              </div>
+           </div>
+           <p class="flex-1 text-lg md:text-xl text-espresso/60 font-light leading-relaxed italic border-l-2 border-matcha/30 pl-8">
+             "{{ recipe.description || 'Discover the intricate flavors and artisanal techniques behind this signature dish from our curated collection.' }}"
+           </p>
+        </div>
+      </section>
+
+      <!-- BIG HERO IMAGE -->
+      <section class="content-item mb-24 md:mb-32">
+        <div class="aspect-[21/9] w-full rounded-[2.5rem] md:rounded-[4rem] overflow-hidden border border-white/60 shadow-2xl relative group">
+           <img 
+             :src="recipe.imageUrl || '/img/matcha.jpg'" 
+             :alt="recipe.title" 
+             class="w-full h-full object-cover transform scale-105 group-hover:scale-110 transition-transform duration-[3000ms] ease-out"
+           />
+           <div class="absolute inset-0 bg-espresso/5 mix-blend-overlay"></div>
+        </div>
+      </section>
+
+      <!-- INGREDIENTS SECTION -->
+      <section class="content-item mb-32">
+        <div class="flex items-center gap-6 mb-16">
+          <h3 class="text-3xl md:text-5xl font-serif text-espresso leading-none">Ingredients.</h3>
+          <div class="h-px flex-1 bg-espresso/10"></div>
+          <span class="text-[0.65rem] font-bold uppercase tracking-[0.3em] text-espresso/30">{{ recipe.ingredients?.length || 0 }} items</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-8">
+          <div 
+            v-for="ing in recipe.ingredients" 
+            :key="ing.id"
+            class="flex items-baseline justify-between group py-4 border-b border-espresso/5 last:md:border-b-0"
+          >
+            <div class="flex items-center gap-4">
+              <div class="w-1.5 h-1.5 rounded-full bg-matcha group-hover:scale-150 transition-transform duration-500"></div>
+              <span class="font-medium text-espresso tracking-tight text-lg">{{ ing.name }}</span>
+            </div>
+            <span class="font-bold text-[0.65rem] uppercase tracking-[0.2em] text-espresso/30 group-hover:text-espresso/60 transition-colors">{{ ing.amount }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PREPARATION SECTION -->
+      <section class="content-item max-w-4xl">
+        <div class="flex items-center gap-6 mb-20">
+          <h3 class="text-3xl md:text-5xl font-serif text-espresso leading-none">The Method.</h3>
+          <div class="h-px flex-1 bg-espresso/10"></div>
+        </div>
+
+        <div class="space-y-24">
+          <div v-for="(step, index) in instructions" :key="index" class="relative group pl-16 md:pl-24">
+            <!-- Step Number Overlay -->
+            <div class="absolute left-0 top-0 text-6xl md:text-8xl font-serif italic text-espresso/5 group-hover:text-matcha/10 transition-colors duration-700 select-none">
+              {{ (index + 1).toString().padStart(2, '0') }}
             </div>
             
-            <ul class="space-y-6">
-              <li 
-                v-for="ing in recipe.ingredients" 
-                :key="ing.id"
-                class="flex items-baseline justify-between py-3 border-b border-white/40 pb-4 last:border-0"
-              >
-                <span class="font-sans font-bold text-base tracking-tight text-espresso/80">{{ ing.name }}</span>
-                <span class="font-sans font-black text-[0.7rem] uppercase tracking-[0.2em] text-espresso/40 ml-4 shrink-0">{{ ing.amount }}</span>
-              </li>
-            </ul>
-          </section>
-
-          <!-- Instructions Section -->
-          <section>
-            <div class="flex items-center gap-6 mb-10">
-              <h3 class="text-3xl text-espresso font-normal">Method</h3>
-              <div class="h-px flex-1 bg-espresso/10"></div>
+            <div class="relative pt-6 md:pt-10">
+               <p class="text-xl md:text-2xl text-espresso/70 leading-[1.6] font-light">
+                {{ step }}
+              </p>
             </div>
-
-            <div class="space-y-10 relative pl-4 border-l border-espresso/5">
-              <div v-for="(step, index) in instructions" :key="index" class="relative group">
-                <!-- Step Indicator Circle -->
-                <div class="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-espresso/20 group-hover:bg-espresso transition-colors"></div>
-                
-                <div class="mb-2">
-                  <span class="font-sans font-black text-[0.65rem] uppercase tracking-[0.3em] text-espresso/60 block">Step {{ Number(index) + 1 }}</span>
-                </div>
-                <p class="text-[1.05rem] text-espresso/80 leading-[1.7] font-normal">
-                  {{ step }}
-                </p>
-              </div>
-            </div>
-          </section>
+          </div>
         </div>
+      </section>
 
-      </div>
     </main>
 
-    <div v-else class="min-h-screen flex items-center justify-center">
-       <div class="w-12 h-12 border-4 border-espresso/10 border-t-espresso rounded-full animate-spin"></div>
+    <!-- Loading State -->
+    <div v-else class="flex-1 flex flex-col items-center justify-center gap-6 opacity-30">
+       <div class="w-12 h-12 border-2 border-espresso/10 border-t-espresso rounded-full animate-spin"></div>
+       <p class="font-serif italic text-xl">Curating recipe details...</p>
     </div>
 
-    <footer class="mt-48 pb-16 text-center border-t border-espresso/5 pt-16">
-      <p class="font-sans font-black text-[0.6rem] uppercase tracking-[0.6em] text-espresso/30">Clove &reg; &bull; 2026</p>
+    <!-- FOOTER -->
+    <footer class="w-full py-24 border-t border-espresso/5 flex flex-col items-center justify-center relative z-10 bg-cream/50">
+      <p class="font-serif italic text-3xl text-espresso/20 mb-8">Clove.</p>
+      <div class="flex items-center gap-10 mb-12">
+         <button @click="navigateTo('/home')" class="font-bold text-[0.6rem] uppercase tracking-[0.4em] text-espresso/30 hover:text-espresso transition-all hover:tracking-[0.6em]">Back to Gallery</button>
+      </div>
+      <p class="font-bold text-[0.55rem] uppercase tracking-[0.5em] text-espresso/10 tracking-widest">© 2026 Crafted for Chefs</p>
     </footer>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
+import gsap from 'gsap'
 
 definePageMeta({
   middleware: 'auth'
@@ -130,6 +145,7 @@ const fetchRecipe = async () => {
   try {
     const data = await $fetch<any>(`/api/recipes/${route.params.id}`)
     recipe.value = data
+    nextTick(() => animateContent())
   } catch (e) {
     console.error('Failed to fetch recipe', e)
     navigateTo('/home')
@@ -138,22 +154,38 @@ const fetchRecipe = async () => {
 
 const instructions = computed(() => {
   if (!recipe.value?.instructions) return []
-  // Split by newlines and filter out empty strings
   return recipe.value.instructions.split('\n').filter((s: string) => s.trim().length > 0)
 })
 
+// GSAP Animations
+const animateEntrance = () => {
+  const tl = gsap.timeline()
+  
+  tl.fromTo('.nav-item', 
+    { y: -20, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1, stagger: 0.1, ease: 'power3.out' }
+  )
+  
+  tl.fromTo('.hero-item',
+    { y: 60, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1.4, stagger: 0.15, ease: 'expo.out' },
+    '-=0.6'
+  )
+}
+
+const animateContent = () => {
+  gsap.fromTo('.content-item',
+    { y: 60, opacity: 0 },
+    { y: 0, opacity: 1, duration: 1.2, stagger: 0.2, ease: 'power3.out', delay: 0.3 }
+  )
+}
+
 onMounted(() => {
+  animateEntrance()
   fetchRecipe()
 })
 </script>
 
 <style scoped>
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.animate-fade-in {
-  animation: fade-in 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
+/* Custom transitions and scroll adjustments */
 </style>
