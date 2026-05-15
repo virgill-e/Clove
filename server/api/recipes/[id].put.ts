@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: 'Unauthorized' });
   }
 
-  const recipeId = Number(event.context.params?.id);
-  if (isNaN(recipeId)) {
+  const recipeId = event.context.params?.id;
+  if (!recipeId) {
     throw createError({ statusCode: 400, statusMessage: 'Invalid recipe ID' });
   }
 
