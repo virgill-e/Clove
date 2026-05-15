@@ -31,7 +31,7 @@
           <p class="hero-subtitle font-medium text-[0.65rem] md:text-xs uppercase tracking-[0.4em] text-espresso/60 mb-2">Your Personal Digital Kitchen</p>
         </div>
         <h2 class="text-7xl md:text-[9rem] lg:text-[11rem] leading-[0.85] font-serif text-espresso tracking-tighter flex flex-col items-center">
-          <div class="overflow-hidden py-2 flex items-center gap-4 md:gap-8">
+          <div class="py-2 flex items-center gap-4 md:gap-8">
             <span class="hero-title-line block italic font-light text-espresso/80">Cook</span> 
             <span class="hero-title-line block">&amp; Love.</span>
           </div>
