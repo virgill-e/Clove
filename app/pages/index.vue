@@ -124,6 +124,7 @@
 import { ref, onMounted } from 'vue'
 import gsap from 'gsap'
 
+const route = useRoute()
 const activePanel = ref<'login' | 'register'>('login')
 const loading = ref(false)
 const currentUser = ref<any>(null)
@@ -132,12 +133,16 @@ const message = ref<{ text: string, type: 'error' | 'success' } | null>(null)
 const loginForm = ref({ email: '', password: '' })
 const registerForm = ref({ name: '', email: '', password: '' })
 
+const getRedirectPath = () => {
+  return (route.query.redirect as string) || '/home'
+}
+
 onMounted(async () => {
   try {
     const data = await $fetch<{ user: any }>('/api/auth/me')
     if (data?.user) {
       currentUser.value = data.user
-      navigateTo('/home')
+      navigateTo(getRedirectPath())
     }
   } catch (e) {}
 
@@ -159,7 +164,7 @@ const handleLogin = async () => {
     if (res.success) {
       currentUser.value = res.user
       message.value = { text: 'Welcome back!', type: 'success' }
-      setTimeout(() => navigateTo('/home'), 800)
+      setTimeout(() => navigateTo(getRedirectPath()), 800)
     }
   } catch (err: any) {
     message.value = { text: err.data?.statusMessage || 'Login failed', type: 'error' }
@@ -180,7 +185,7 @@ const handleRegister = async () => {
     if (res.success) {
       currentUser.value = res.user
       message.value = { text: 'Account created!', type: 'success' }
-      setTimeout(() => navigateTo('/home'), 800)
+      setTimeout(() => navigateTo(getRedirectPath()), 800)
     }
   } catch (err: any) {
     message.value = { text: err.data?.statusMessage || 'Registration failed', type: 'error' }
