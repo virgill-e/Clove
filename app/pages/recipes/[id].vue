@@ -17,7 +17,18 @@
       <div class="overflow-hidden">
         <h1 class="nav-item text-2xl md:text-3xl font-serif text-espresso tracking-tight leading-none">Clove.</h1>
       </div>
-      <div class="w-24 md:w-32"></div> <!-- Spacer -->
+      <div class="overflow-hidden flex items-center gap-6">
+        <button 
+          v-if="isOwner"
+          @click="isModalOpen = true"
+          class="nav-item bg-espresso text-matcha px-6 py-3 rounded-full font-bold text-[0.6rem] uppercase tracking-[0.2em] shadow-lg shadow-espresso/10 hover:scale-105 active:scale-95 transition-all"
+        >
+          Edit Recipe
+        </button>
+        <div class="w-12 h-12 rounded-full border border-espresso/10 md:flex hidden items-center justify-center nav-item">
+          <svg class="w-4 h-4 text-espresso/40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+        </div>
+      </div>
     </header>
 
     <main v-if="recipe" class="flex-1 w-full max-w-screen-xl mx-auto px-8 md:px-16 pb-32">
@@ -127,6 +138,14 @@
       </div>
       <p class="font-bold text-[0.55rem] uppercase tracking-[0.5em] text-espresso/10 tracking-widest">© 2026 Crafted for Chefs</p>
     </footer>
+
+    <!-- Edit Modal -->
+    <RecipeModal 
+      :is-open="isModalOpen" 
+      :recipe="recipe"
+      @close="isModalOpen = false" 
+      @success="handleUpdateSuccess"
+    />
   </div>
 </template>
 
@@ -140,6 +159,19 @@ definePageMeta({
 
 const route = useRoute()
 const recipe = ref<any>(null)
+const currentUser = ref<any>(null)
+const isModalOpen = ref(false)
+
+const isOwner = computed(() => {
+  return recipe.value && currentUser.value && recipe.value.userId === currentUser.value.id
+})
+
+const fetchUser = async () => {
+  try {
+    const data = await $fetch<{ user: any }>('/api/auth/me')
+    currentUser.value = data.user
+  } catch (e) {}
+}
 
 const fetchRecipe = async () => {
   try {
@@ -150,6 +182,10 @@ const fetchRecipe = async () => {
     console.error('Failed to fetch recipe', e)
     navigateTo('/home')
   }
+}
+
+const handleUpdateSuccess = () => {
+  fetchRecipe() // Refresh data
 }
 
 const instructions = computed(() => {
@@ -182,6 +218,7 @@ const animateContent = () => {
 
 onMounted(() => {
   animateEntrance()
+  fetchUser()
   fetchRecipe()
 })
 </script>

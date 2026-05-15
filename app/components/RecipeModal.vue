@@ -10,8 +10,8 @@
         <!-- Header -->
         <div class="p-8 md:px-12 md:py-10 border-b border-espresso/5 flex items-center justify-between shrink-0">
           <div>
-            <h2 class="text-4xl text-espresso font-normal">New <span class="italic">Recipe</span>.</h2>
-            <p class="text-espresso/60 font-sans font-medium mt-1">Initialize your next culinary masterpiece.</p>
+            <h2 class="text-4xl text-espresso font-normal">{{ isEdit ? 'Edit' : 'New' }} <span class="italic">Recipe</span>.</h2>
+            <p class="text-espresso/60 font-sans font-medium mt-1">{{ isEdit ? 'Refine your culinary work.' : 'Initialize your next culinary masterpiece.' }}</p>
           </div>
           <button @click="close" class="w-12 h-12 rounded-full border border-espresso/10 flex items-center justify-center hover:bg-espresso hover:text-matcha transition-all duration-300">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -163,7 +163,7 @@
             :disabled="loading"
             class="bg-espresso text-matcha px-12 py-5 rounded-full font-sans font-black text-[0.7rem] uppercase tracking-[0.4em] shadow-xl shadow-espresso/10 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50"
           >
-            {{ loading ? 'Synchronizing...' : 'Initialize Recipe' }}
+            {{ loading ? 'Synchronizing...' : isEdit ? 'Save Changes' : 'Initialize Recipe' }}
           </button>
         </div>
 
@@ -173,10 +173,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, onUnmounted } from 'vue'
+import { ref, reactive, watch, onUnmounted, computed } from 'vue'
 
 const props = defineProps<{
   isOpen: boolean
+  recipe?: any
 }>()
 
 const emit = defineEmits(['close', 'success'])
@@ -192,6 +193,8 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const selectedFile = ref<File | null>(null)
 const imagePreview = ref<string | null>(null)
 
+const isEdit = computed(() => !!props.recipe)
+
 const initialForm = {
   title: '',
   description: '',
@@ -204,6 +207,29 @@ const initialForm = {
 }
 
 const form = reactive({ ...initialForm })
+
+watch(() => props.recipe, (newRecipe) => {
+  if (newRecipe) {
+    form.title = newRecipe.title || ''
+    form.description = newRecipe.description || ''
+    form.instructions = newRecipe.instructions || ''
+    form.tag = newRecipe.tag || 'Daily'
+    form.cookingTime = newRecipe.cookingTime || ''
+    if (newRecipe.ingredients && newRecipe.ingredients.length > 0) {
+      form.ingredientInputs = newRecipe.ingredients.map((i: any) => ({
+        name: i.name,
+        amount: i.amount
+      }))
+    } else {
+      form.ingredientInputs = [{ name: '', amount: '' }]
+    }
+    imagePreview.value = newRecipe.imageUrl || null
+  } else {
+    Object.assign(form, initialForm)
+    form.ingredientInputs = [{ name: '', amount: '' }]
+    imagePreview.value = null
+  }
+}, { immediate: true })
 
 watch(() => props.isOpen, (isOpen) => {
   if (process.client) {
@@ -293,7 +319,6 @@ const selectSuggestion = (index: number, name: string) => {
 }
 
 const handleBlur = () => {
-  // Use timeout to allow mousedown to fire on suggestion
   setTimeout(() => {
     activeIngSearch.value = null
   }, 200)
@@ -338,8 +363,11 @@ const handleSubmit = async () => {
       formData.append('image', selectedFile.value)
     }
 
-    await $fetch('/api/recipes', {
-      method: 'POST',
+    const url = isEdit.value ? `/api/recipes/${props.recipe.id}` : '/api/recipes'
+    const method = isEdit.value ? 'PUT' : 'POST'
+
+    await $fetch(url, {
+      method,
       body: formData
     })
     emit('success')

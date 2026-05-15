@@ -119,9 +119,16 @@
               <h3 class="text-3xl md:text-4xl font-serif text-espresso leading-[1.1] tracking-tight mb-4 group-hover:text-matcha transition-colors duration-300">
                 {{ recipe.title }}
               </h3>
-              <p class="text-espresso/60 text-sm leading-relaxed font-light line-clamp-2 md:line-clamp-3">
-                {{ recipe.description || 'A beautiful, curated recipe perfect for your collection. Discover the intricate flavors and instructions inside.' }}
-              </p>
+              <div class="flex flex-wrap gap-2 pt-2">
+                <span 
+                  v-for="ing in recipe.ingredients?.slice(0, 5)" 
+                  :key="ing.id"
+                  class="text-[0.55rem] font-bold uppercase tracking-[0.1em] text-espresso/50 bg-espresso/5 px-2 py-1 rounded-md group-hover:bg-matcha/20 group-hover:text-espresso transition-colors"
+                >
+                  {{ ing.name }}
+                </span>
+                <span v-if="recipe.ingredients?.length > 5" class="text-[0.55rem] font-bold text-espresso/20 flex items-center">+{{ recipe.ingredients.length - 5 }} more</span>
+              </div>
             </div>
             
             <div class="mt-8 flex items-center text-espresso font-semibold text-[0.65rem] uppercase tracking-[0.2em] opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
@@ -191,9 +198,11 @@ const fetchTags = async () => {
 }
 
 const filteredRecipes = computed(() => {
+  const q = searchQuery.value.toLowerCase()
   return recipes.value.filter(r => {
-    const matchesSearch = r.title.toLowerCase().includes(searchQuery.value.toLowerCase()) || 
-                         (r.description && r.description.toLowerCase().includes(searchQuery.value.toLowerCase()))
+    const matchesSearch = r.title.toLowerCase().includes(q) || 
+                         (r.description && r.description.toLowerCase().includes(q)) ||
+                         (r.ingredients && r.ingredients.some((ing: any) => ing.name.toLowerCase().includes(q)))
     const matchesTag = !activeTag.value || r.tag === activeTag.value
     return matchesSearch && matchesTag
   })
