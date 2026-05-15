@@ -52,11 +52,11 @@ export default defineEventHandler(async (event) => {
     if (allowedExtensions.includes(ext)) {
       const timestamp = Date.now();
       const safeName = `${timestamp}-${imageFile.filename.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-      const uploadDir = join(process.cwd(), 'public/uploads');
+      const uploadDir = join(process.cwd(), 'uploads');
       await mkdir(uploadDir, { recursive: true });
       const filePath = join(uploadDir, safeName);
       await writeFile(filePath, imageFile.data);
-      imageUrl = `/uploads/${safeName}`;
+      imageUrl = `/api/uploads/${safeName}`;
     }
   }
 

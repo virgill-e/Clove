@@ -21,4 +21,10 @@ logs
 # Local env files
 .env
 .env.*
-!.env.example
+# Local database
+local.db
+
+# Uploads
+public/uploads
+uploads/
+local.db

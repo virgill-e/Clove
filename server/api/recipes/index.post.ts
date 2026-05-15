@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
     // Generate unique name
     const timestamp = Date.now();
     const safeName = `${timestamp}-${imageFile.filename.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-    const uploadDir = join(process.cwd(), 'public/uploads');
+    const uploadDir = join(process.cwd(), 'uploads');
     
     // Ensure dir exists
     await mkdir(uploadDir, { recursive: true });
@@ -54,7 +54,7 @@ export default defineEventHandler(async (event) => {
     const filePath = join(uploadDir, safeName);
     await writeFile(filePath, imageFile.data);
     
-    imageUrl = `/uploads/${safeName}`;
+    imageUrl = `/api/uploads/${safeName}`;
   }
 
   try {
