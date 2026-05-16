@@ -3,6 +3,7 @@ import { db } from '../../utils/db';
 import { eq, and } from 'drizzle-orm';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { deleteUpload } from '../../utils/files';
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user;
@@ -43,6 +44,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Title is required' });
   }
 
+  let newImageUrl = null;
   let imageUrl = existingRecipe.imageUrl; // Keep old image by default
   
   if (imageFile && imageFile.data && imageFile.filename) {
@@ -56,7 +58,9 @@ export default defineEventHandler(async (event) => {
       await mkdir(uploadDir, { recursive: true });
       const filePath = join(uploadDir, safeName);
       await writeFile(filePath, imageFile.data);
-      imageUrl = `/api/uploads/${safeName}`;
+      
+      newImageUrl = `/api/uploads/${safeName}`;
+      imageUrl = newImageUrl;
     }
   }
 
@@ -101,9 +105,18 @@ export default defineEventHandler(async (event) => {
       }
     }
 
+    // Success! Now delete the old image if it was replaced
+    if (newImageUrl && existingRecipe.imageUrl && newImageUrl !== existingRecipe.imageUrl) {
+      await deleteUpload(existingRecipe.imageUrl);
+    }
+
     return { success: true };
   } catch (e: any) {
     console.error('Error updating recipe:', e);
+    // Cleanup NEWLY uploaded image if database update failed
+    if (newImageUrl) {
+      await deleteUpload(newImageUrl);
+    }
     throw createError({ statusCode: 500, statusMessage: 'Internal Server Error' });
   }
 });

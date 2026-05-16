@@ -1,6 +1,7 @@
 import { recipes } from '../../database/schema';
 import { db } from '../../utils/db';
 import { eq, and } from 'drizzle-orm';
+import { deleteUpload } from '../../utils/files';
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user;
@@ -32,6 +33,11 @@ export default defineEventHandler(async (event) => {
     // Delete the recipe (recipeIngredients will be deleted via CASCADE)
     await db.delete(recipes).where(eq(recipes.id, recipeId));
     
+    // Delete the recipe's image if it exists
+    if (existingRecipe.imageUrl) {
+      await deleteUpload(existingRecipe.imageUrl);
+    }
+
     return { success: true };
   } catch (e) {
     console.error('Error deleting recipe:', e);

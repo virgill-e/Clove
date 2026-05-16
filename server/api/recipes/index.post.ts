@@ -3,6 +3,7 @@ import { db } from '../../utils/db';
 import { eq } from 'drizzle-orm';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
+import { deleteUpload } from '../../utils/files';
 
 export default defineEventHandler(async (event) => {
   const user = event.context.user;
@@ -99,6 +100,10 @@ export default defineEventHandler(async (event) => {
     return { success: true, recipe: newRecipe };
   } catch (e: any) {
     console.error('Error creating recipe:', e);
+    // Cleanup uploaded image if database insert failed
+    if (imageUrl) {
+      await deleteUpload(imageUrl);
+    }
     throw createError({ statusCode: 500, statusMessage: 'Internal Server Error' });
   }
 });
