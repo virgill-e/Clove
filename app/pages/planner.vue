@@ -38,59 +38,33 @@
              <div class="absolute -left-4 top-8 w-1 h-12 bg-matcha/50 rounded-full hidden lg:block"></div>
              <h3 class="text-3xl font-serif text-espresso mb-6">{{ day }}</h3>
              
-             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Lunch Slot -->
-                <div class="group relative">
-                  <h4 class="text-[0.55rem] font-bold uppercase tracking-[0.3em] text-espresso/40 mb-3 ml-2">Lunch</h4>
-                  <div 
-                    v-if="getEntry(day, 'Lunch')" 
-                    class="relative aspect-[4/3] rounded-3xl overflow-hidden border border-espresso/5 shadow-sm group-hover:shadow-xl transition-all duration-500 cursor-pointer bg-white"
-                  >
-                    <img :src="getEntry(day, 'Lunch').recipe.imageUrl" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
+             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Existing Entries -->
+                <div 
+                  v-for="entry in getEntriesForDay(day)" 
+                  :key="entry.id"
+                  class="group relative"
+                >
+                  <div class="relative aspect-[4/3] rounded-3xl overflow-hidden border border-espresso/5 shadow-sm group-hover:shadow-xl transition-all duration-500 cursor-pointer bg-white">
+                    <img :src="entry.recipe.imageUrl" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
                     <div class="absolute inset-0 bg-linear-to-t from-espresso/80 via-espresso/20 to-transparent"></div>
                     <div class="absolute bottom-0 left-0 p-6 w-full flex justify-between items-end">
                       <div>
-                        <h5 class="text-cream font-serif text-xl mb-1">{{ getEntry(day, 'Lunch').recipe.title }}</h5>
-                        <p class="text-[0.6rem] uppercase tracking-widest text-cream/70">{{ getEntry(day, 'Lunch').recipe.cookingTime }}</p>
+                        <h5 class="text-cream font-serif text-xl mb-1">{{ entry.recipe.title }}</h5>
+                        <p class="text-[0.6rem] uppercase tracking-widest text-cream/70">{{ entry.recipe.cookingTime }}</p>
                       </div>
-                      <button @click.stop="removeEntry(getEntry(day, 'Lunch').id)" class="w-8 h-8 rounded-full bg-cream/20 backdrop-blur-md flex items-center justify-center text-cream hover:bg-red-500 transition-colors">
+                      <button @click.stop="removeEntry(entry.id)" class="w-8 h-8 rounded-full bg-cream/20 backdrop-blur-md flex items-center justify-center text-cream hover:bg-red-500 transition-colors">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                       </button>
                     </div>
-                  </div>
-                  <div 
-                    v-else 
-                    @click="openSelectModal(day, 'Lunch')"
-                    class="aspect-[4/3] rounded-3xl border-2 border-dashed border-espresso/10 flex flex-col items-center justify-center text-espresso/30 hover:border-matcha/50 hover:text-matcha hover:bg-matcha/5 transition-all duration-300 cursor-pointer"
-                  >
-                    <svg class="w-8 h-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
-                    <span class="text-[0.6rem] font-bold uppercase tracking-[0.2em]">Add Recipe</span>
                   </div>
                 </div>
 
-                <!-- Dinner Slot -->
+                <!-- Add Recipe Slot -->
                 <div class="group relative">
-                  <h4 class="text-[0.55rem] font-bold uppercase tracking-[0.3em] text-espresso/40 mb-3 ml-2">Dinner</h4>
                   <div 
-                    v-if="getEntry(day, 'Dinner')" 
-                    class="relative aspect-[4/3] rounded-3xl overflow-hidden border border-espresso/5 shadow-sm group-hover:shadow-xl transition-all duration-500 cursor-pointer bg-white"
-                  >
-                    <img :src="getEntry(day, 'Dinner').recipe.imageUrl" class="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
-                    <div class="absolute inset-0 bg-linear-to-t from-espresso/80 via-espresso/20 to-transparent"></div>
-                    <div class="absolute bottom-0 left-0 p-6 w-full flex justify-between items-end">
-                      <div>
-                        <h5 class="text-cream font-serif text-xl mb-1">{{ getEntry(day, 'Dinner').recipe.title }}</h5>
-                        <p class="text-[0.6rem] uppercase tracking-widest text-cream/70">{{ getEntry(day, 'Dinner').recipe.cookingTime }}</p>
-                      </div>
-                      <button @click.stop="removeEntry(getEntry(day, 'Dinner').id)" class="w-8 h-8 rounded-full bg-cream/20 backdrop-blur-md flex items-center justify-center text-cream hover:bg-red-500 transition-colors">
-                        <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                      </button>
-                    </div>
-                  </div>
-                  <div 
-                    v-else 
-                    @click="openSelectModal(day, 'Dinner')"
-                    class="aspect-[4/3] rounded-3xl border-2 border-dashed border-espresso/10 flex flex-col items-center justify-center text-espresso/30 hover:border-matcha/50 hover:text-matcha hover:bg-matcha/5 transition-all duration-300 cursor-pointer"
+                    @click="openSelectModal(day)"
+                    class="aspect-[4/3] rounded-3xl border-2 border-dashed border-espresso/10 flex flex-col items-center justify-center text-espresso/30 hover:border-matcha/50 hover:text-matcha hover:bg-matcha/5 transition-all duration-300 cursor-pointer h-full min-h-[150px]"
                   >
                     <svg class="w-8 h-8 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>
                     <span class="text-[0.6rem] font-bold uppercase tracking-[0.2em]">Add Recipe</span>
@@ -118,12 +92,12 @@
            </div>
 
            <ul v-else class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
-             <li v-for="item in shoppingList" :key="item.name" class="flex flex-col group cursor-pointer" @click="toggleCheck(item.name)">
+             <li v-for="item in shoppingList" :key="item.name" class="flex flex-col group cursor-pointer" @click="toggleCheck(item)">
                <div class="flex items-baseline gap-3">
-                 <div class="w-3 h-3 rounded-sm border border-espresso/30 flex items-center justify-center transition-colors mt-1 shrink-0" :class="{'bg-matcha border-matcha text-espresso': checkedItems.includes(item.name)}">
-                   <svg v-if="checkedItems.includes(item.name)" class="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                 <div class="w-3 h-3 rounded-sm border border-espresso/30 flex items-center justify-center transition-colors mt-1 shrink-0" :class="{'bg-matcha border-matcha text-espresso': !!checkedItems[item.name]}">
+                   <svg v-if="checkedItems[item.name]" class="w-2 h-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
                  </div>
-                 <div class="flex-1" :class="{'opacity-40 line-through': checkedItems.includes(item.name)}">
+                 <div class="flex-1" :class="{'opacity-40 line-through': !!checkedItems[item.name]}">
                    <span class="font-medium text-espresso text-sm">{{ item.name }}</span>
                    <div class="text-[0.6rem] text-espresso/50 uppercase tracking-widest mt-0.5 flex flex-wrap gap-x-2">
                      <span v-for="(amt, i) in item.amounts" :key="i">
@@ -148,7 +122,7 @@
           </button>
           
           <h2 class="text-3xl md:text-4xl font-serif text-espresso mb-2">Select a Recipe</h2>
-          <p class="text-[0.65rem] uppercase tracking-[0.2em] text-espresso/40 mb-8 font-bold">For {{ targetDay }} - {{ targetMealType }}</p>
+          <p class="text-[0.65rem] uppercase tracking-[0.2em] text-espresso/40 mb-8 font-bold">For {{ targetDay }}</p>
 
           <div v-if="recipes.length === 0" class="text-center py-12">
             <p class="italic font-serif text-espresso/50">You don't have any recipes yet.</p>
@@ -189,13 +163,12 @@ definePageMeta({
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 const plannerEntries = ref<any[]>([])
 const shoppingList = ref<any[]>([])
-const checkedItems = ref<string[]>([])
+const checkedItems = ref<Record<string, string>>({})
 const recipes = ref<any[]>([])
 
 // Modal state
 const isSelectModalOpen = ref(false)
 const targetDay = ref('')
-const targetMealType = ref('')
 
 const fetchData = async () => {
   try {
@@ -205,8 +178,29 @@ const fetchData = async () => {
       $fetch('/api/recipes') // Fetch user's recipes for the modal
     ])
     plannerEntries.value = entries as any[]
-    shoppingList.value = list as any[]
+    
+    const newList = list as any[]
+    shoppingList.value = newList
     recipes.value = userRecipes as any[]
+
+    // Smart Uncheck: if amounts have changed for a checked item, uncheck it so the user doesn't forget
+    let hasChanges = false
+    for (const name in checkedItems.value) {
+      const currentItem = newList.find((i: any) => i.name === name)
+      if (currentItem) {
+        const currentAmounts = currentItem.amounts.join(',')
+        if (checkedItems.value[name] !== currentAmounts) {
+          // Amounts changed, uncheck!
+          delete checkedItems.value[name]
+          hasChanges = true
+        }
+      }
+    }
+    
+    if (hasChanges) {
+      localStorage.setItem('clove_shopping_list', JSON.stringify(checkedItems.value))
+    }
+
   } catch (e) {
     console.error('Failed to fetch planner data', e)
   }
@@ -214,6 +208,14 @@ const fetchData = async () => {
 
 onMounted(() => {
   fetchData()
+  
+  // Load checked items from local storage
+  try {
+    const saved = localStorage.getItem('clove_shopping_list')
+    if (saved) {
+      checkedItems.value = JSON.parse(saved)
+    }
+  } catch (e) {}
   
   // Entrance animation
   const tl = gsap.timeline()
@@ -233,20 +235,18 @@ onMounted(() => {
   )
 })
 
-const getEntry = (day: string, mealType: string) => {
-  return plannerEntries.value.find(e => e.day === day && e.mealType === mealType)
+const getEntriesForDay = (day: string) => {
+  return plannerEntries.value.filter(e => e.day === day)
 }
 
-const openSelectModal = (day: string, mealType: string) => {
+const openSelectModal = (day: string) => {
   targetDay.value = day
-  targetMealType.value = mealType
   isSelectModalOpen.value = true
 }
 
 const closeSelectModal = () => {
   isSelectModalOpen.value = false
   targetDay.value = ''
-  targetMealType.value = ''
 }
 
 const addRecipeToPlanner = async (recipeId: string) => {
@@ -256,7 +256,7 @@ const addRecipeToPlanner = async (recipeId: string) => {
       body: {
         recipeId,
         day: targetDay.value,
-        mealType: targetMealType.value
+        mealType: 'Meal'
       }
     })
     closeSelectModal()
@@ -276,13 +276,15 @@ const removeEntry = async (id: string) => {
   }
 }
 
-const toggleCheck = (name: string) => {
-  const index = checkedItems.value.indexOf(name)
-  if (index > -1) {
-    checkedItems.value.splice(index, 1)
+const toggleCheck = (item: any) => {
+  const name = item.name
+  if (checkedItems.value[name]) {
+    delete checkedItems.value[name]
   } else {
-    checkedItems.value.push(name)
+    checkedItems.value[name] = item.amounts.join(',')
   }
+  // Persist to local storage
+  localStorage.setItem('clove_shopping_list', JSON.stringify(checkedItems.value))
 }
 </script>
 
