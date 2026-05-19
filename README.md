@@ -150,8 +150,3 @@ The app is available at `http://localhost:3000`.
 | `npx drizzle-kit migrate` | Apply pending migrations |
 | `npx drizzle-kit studio` | Open Drizzle Studio (visual DB browser) |
 
----
-
-## 📄 License
-
-MIT — do whatever you like with it.
