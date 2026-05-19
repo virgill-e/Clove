@@ -75,7 +75,7 @@ export default defineEventHandler(async (event) => {
       const ingredientInputs = JSON.parse(rawIngredients);
       if (Array.isArray(ingredientInputs)) {
         for (const input of ingredientInputs) {
-          let ingredientId: number;
+          let ingredientId: string;
           const name = input.name.trim().toLowerCase();
           if (!name) continue;
 

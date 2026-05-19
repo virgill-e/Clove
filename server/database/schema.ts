@@ -38,3 +38,12 @@ export const savedRecipes = sqliteTable('saved_recipes', {
   recipeId: text('recipe_id').notNull().references(() => recipes.id, { onDelete: 'cascade' }),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(new Date()),
 });
+
+export const weeklyPlanner = sqliteTable('weekly_planner', {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: text('user_id').notNull().references(() => users.id),
+  recipeId: text('recipe_id').notNull().references(() => recipes.id, { onDelete: 'cascade' }),
+  day: text('day').notNull(), // 'Monday', 'Tuesday', etc.
+  mealType: text('meal_type').notNull(), // 'Lunch', 'Dinner'
+  createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(new Date()),
+});

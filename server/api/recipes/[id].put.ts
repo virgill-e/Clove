@@ -83,7 +83,7 @@ export default defineEventHandler(async (event) => {
         await db.delete(recipeIngredients).where(eq(recipeIngredients.recipeId, recipeId));
 
         for (const input of ingredientInputs) {
-          let ingredientId: number;
+          let ingredientId: string;
           const name = input.name.trim().toLowerCase();
           if (!name) continue;
 

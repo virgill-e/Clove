@@ -11,6 +11,14 @@
       
       <!-- Profile / User Actions -->
       <div class="flex items-center gap-6 overflow-hidden">
+        <button 
+          @click="navigateTo('/planner')"
+          class="nav-item hidden md:flex items-center gap-3 bg-matcha/20 text-espresso px-5 py-2.5 rounded-full font-bold text-[0.6rem] uppercase tracking-[0.2em] hover:bg-matcha hover:shadow-lg transition-all duration-300"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          Weekly Planner
+        </button>
+
         <div class="nav-item flex items-center gap-4 bg-white/40 backdrop-blur-md px-4 py-2 rounded-full border border-espresso/10 shadow-[0_4px_16px_rgba(74,43,24,0.05)] hover:bg-white/60 transition-colors cursor-pointer group" @click="handleLogout">
           <div class="flex flex-col text-right">
             <span class="font-semibold text-[0.65rem] uppercase tracking-[0.15em] leading-tight text-espresso">{{ user?.name || 'Chef' }}</span>
