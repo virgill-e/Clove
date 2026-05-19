@@ -1,21 +1,24 @@
-# Clove - cook with love
+# Clove · cook with love
 
-> A personal recipe manager — create, organize, and rediscover your kitchen repertoire.
+> A beautifully curated space to store, schedule, and share your favorite culinary discoveries.
 
-Clove is a self-hosted web application to manage your personal recipe collection. Create detailed recipes, organize them with tags, build ingredient lists, and find exactly what you're looking for in seconds.
+![Clove App Mockup](./mockup%20Clove.webp)
+
+Clove is a personal recipe manager built as a web application. Create detailed recipes, tag and browse your collection, plan your week meal by meal, and generate a shopping list automatically — all within a single, self-hosted app.
 
 ---
 
 ## ✨ Features
 
-- **User account** — secure authentication with session management
-- **Recipe creation** — rich editor with ingredients, steps, photos, tags, and metadata (prep time, servings, difficulty)
-- **Recipe library** — your full collection at a glance with card or list view
-- **Keyword search** — instant full-text search across recipe titles, descriptions, and ingredients
-- **Tag filtering** — organize by cuisine, diet, occasion, or any custom tag
-- **Favourites** — bookmark your go-to recipes for quick access
-- **Ingredient & shopping list** — compile ingredients from one or several recipes into a shopping list
-- **Fully private** — all data stays on your server, no third-party sharing
+- **Authentication** — register and log in with email and password; sessions are persisted server-side
+- **Recipe library** — browse your full collection on a clean card-based home page
+- **Recipe creation & editing** — add a title, description, instructions, cooking time, ingredients, a cover photo, and a category tag; editing is restricted to the recipe owner
+- **Recipe sharing** — save other users' public recipes to your own collection
+- **Ingredient management** — ingredients are stored in a shared catalogue and linked to recipes with quantities
+- **Tag / category system** — a single tag per recipe (e.g. *Daily*, *Dessert*…) for quick filtering
+- **Weekly meal planner** — assign any recipe to a day and meal slot (breakfast, lunch, dinner, snack…); unlimited entries per day
+- **Shopping list** — generated automatically from your week's planner, with persistent checked/unchecked state
+- **Image uploads** — cover photos are stored locally in the `uploads/` directory and served by the Nitro server
 
 ---
 
@@ -25,11 +28,11 @@ Clove is a self-hosted web application to manage your personal recipe collection
 |---|---|
 | Framework | [Nuxt 4](https://nuxt.com/) |
 | Language | TypeScript |
-| Styling | [Tailwind CSS v4](https://tailwindcss.com/) |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com/) (Vite plugin) |
+| Animations | [GSAP 3](https://greensock.com/gsap/) |
 | ORM | [Drizzle ORM](https://orm.drizzle.team/) |
-| Database | PostgreSQL |
-| Authentication | [Nuxt Auth Utils](https://github.com/atinux/nuxt-auth-utils) |
-| Deployment | Docker (self-hosted) |
+| Database | SQLite (`better-sqlite3`) |
+| Auth | Custom — bcrypt password hashing + server session middleware |
 
 ---
 
@@ -38,55 +41,50 @@ Clove is a self-hosted web application to manage your personal recipe collection
 ```
 clove/
 ├── app/
-│   ├── assets/          # Global styles & static assets
-│   ├── components/      # Reusable Vue components
-│   │   ├── recipe/      # RecipeCard, RecipeForm, RecipeDetail…
-│   │   ├── ingredient/  # IngredientRow, ShoppingList…
-│   │   └── ui/          # Button, Input, Badge, Modal…
-│   ├── layouts/         # Default, auth
-│   ├── pages/
-│   │   ├── index.vue            # Recipe library (search + filter)
-│   │   ├── recipes/
-│   │   │   ├── new.vue          # Create a recipe
-│   │   │   ├── [id].vue         # Recipe detail
-│   │   │   └── [id]/edit.vue    # Edit a recipe
-│   │   ├── favourites.vue       # Favourited recipes
-│   │   ├── shopping-list.vue    # Shopping list
-│   │   └── auth/
-│   │       ├── login.vue
-│   │       └── register.vue
-│   └── composables/     # useRecipes, useFavourites, useShoppingList…
+│   ├── assets/css/          # Tailwind CSS entry point (main.css)
+│   ├── components/
+│   │   └── RecipeModal.vue  # Recipe detail / quick-view modal
+│   ├── middleware/
+│   │   └── auth.ts          # Client-side route guard
+│   └── pages/
+│       ├── index.vue        # Login & register
+│       ├── home.vue         # Recipe library
+│       ├── planner.vue      # Weekly meal planner + shopping list
+│       └── recipes/
+│           └── [id].vue     # Recipe detail & edit
 ├── server/
-│   ├── api/             # Nuxt API routes
-│   │   ├── recipes/
-│   │   ├── tags/
-│   │   ├── favourites/
-│   │   └── shopping-list/
-│   ├── db/
-│   │   ├── schema.ts    # Drizzle schema
-│   │   └── index.ts     # DB connection
-│   └── utils/           # Auth helpers, validators
-├── drizzle/             # Migrations
-├── public/
-├── docker-compose.yml
-├── Dockerfile
-└── nuxt.config.ts
+│   ├── api/
+│   │   ├── auth/            # login, logout, register, me
+│   │   ├── recipes/         # CRUD (index, [id], tags)
+│   │   ├── ingredients/     # search
+│   │   ├── planner/         # weekly planner + shopping-list
+│   │   └── uploads/         # image upload handler
+│   ├── database/
+│   │   ├── schema.ts        # Drizzle table definitions
+│   │   └── migrations/      # Generated migration files
+│   ├── middleware/
+│   │   └── auth.ts          # Server-side session guard
+│   └── utils/               # Shared server helpers
+├── public/                  # Static assets (favicon, stock images)
+├── uploads/                 # User-uploaded recipe images (git-ignored)
+├── local.db                 # SQLite database file (git-ignored)
+├── drizzle.config.ts
+├── nuxt.config.ts
+└── package.json
 ```
 
 ---
 
-## 🗄️ Database Schema (Overview)
+## 🗄️ Database Schema
 
 ```
-users          id, email, passwordHash, name, createdAt
-recipes        id, userId, title, description, coverImage,
-               prepTime, cookTime, servings, difficulty,
-               isFavourite, createdAt, updatedAt
-ingredients    id, recipeId, name, quantity, unit, position
-steps          id, recipeId, content, position
-tags           id, name, slug
-recipe_tags    recipeId, tagId
-shopping_list  id, userId, ingredientId, quantity, unit, checked
+users              id · name · email · password · createdAt
+recipes            id · userId · title · description · instructions
+                   imageUrl · tag · cookingTime · createdAt
+ingredients        id · name (unique)
+recipe_ingredients id · recipeId · ingredientId · amount
+saved_recipes      id · userId · recipeId · createdAt
+weekly_planner     id · userId · recipeId · day · mealType · createdAt
 ```
 
 ---
@@ -95,8 +93,7 @@ shopping_list  id, userId, ingredientId, quantity, unit, checked
 
 ### Prerequisites
 
-- [Docker](https://www.docker.com/) & Docker Compose
-- Node.js ≥ 20 (for local development only)
+- Node.js ≥ 20
 
 ### 1. Clone the repo
 
@@ -105,110 +102,53 @@ git clone https://github.com/your-username/clove.git
 cd clove
 ```
 
-### 2. Configure environment
+### 2. Install dependencies
 
 ```bash
-cp .env.example .env
+npm install
 ```
 
-Edit `.env`:
+### 3. Configure environment
+
+Create a `.env` file at the root:
 
 ```env
-# Database
-DATABASE_URL=postgresql://clove:yourpassword@db:5432/clove
+# Path to the SQLite database file (defaults to local.db)
+DATABASE_URL=local.db
 
-# Auth (generate with: openssl rand -base64 32)
+# Secret used to sign session cookies — generate with: openssl rand -base64 32
 NUXT_SESSION_SECRET=your-super-secret-key
 ```
 
-### 3. Run with Docker
+### 4. Create the database
 
 ```bash
-docker compose up -d
-```
-
-### 4. Run database migrations
-
-```bash
-docker compose exec app npx drizzle-kit migrate
-```
-
----
-
-## 💻 Local Development
-
-```bash
-# Install dependencies
-npm install
-
-# Start a local PostgreSQL instance
-docker compose up -d db
-
-# Push the schema
 npx drizzle-kit push
+```
 
-# Start the dev server
+This introspects `server/database/schema.ts` and creates the `local.db` SQLite file with all tables.
+
+### 5. Start the dev server
+
+```bash
 npm run dev
 ```
 
----
-
-## 🐳 Docker
-
-### `docker-compose.yml` (production)
-
-```yaml
-services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    env_file: .env
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: postgres:16-alpine
-    environment:
-      POSTGRES_USER: clove
-      POSTGRES_PASSWORD: yourpassword
-      POSTGRES_DB: clove
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U clove"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-
-volumes:
-  postgres_data:
-```
+The app is available at `http://localhost:3000`.
 
 ---
 
-## 📦 Key Scripts
+## 📦 Scripts
 
 | Command | Description |
 |---|---|
-| `npm run dev` | Start dev server |
+| `npm run dev` | Start the development server (accessible on LAN) |
 | `npm run build` | Build for production |
-| `npm run preview` | Preview production build |
-| `npx drizzle-kit generate` | Generate a new migration |
-| `npx drizzle-kit migrate` | Run pending migrations |
-| `npx drizzle-kit studio` | Open Drizzle Studio (DB GUI) |
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Recipe cover image upload
-- [ ] Servings scaler (auto-adjust ingredient quantities)
-- [ ] Export recipe as PDF
-- [ ] Meal planner (plan recipes by day)
-- [ ] Nutritional info (manual or via API)
-- [ ] PWA / offline support
+| `npm run preview` | Preview the production build locally |
+| `npx drizzle-kit push` | Sync schema to the database (no migrations) |
+| `npx drizzle-kit generate` | Generate a migration file from schema changes |
+| `npx drizzle-kit migrate` | Apply pending migrations |
+| `npx drizzle-kit studio` | Open Drizzle Studio (visual DB browser) |
 
 ---
 

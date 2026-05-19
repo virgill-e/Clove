@@ -25,7 +25,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="space-y-2">
               <label class="block text-[0.65rem] font-black uppercase tracking-[0.3em] text-espresso/50 ml-6">Recipe Title</label>
-              <input v-model="form.title" type="text" placeholder="e.g. Matcha Soufflé" class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm" />
+              <input v-model="form.title" type="text" placeholder="e.g. Matcha Soufflé" class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm text-base" />
             </div>
             
             <div class="space-y-2 relative">
@@ -37,7 +37,7 @@
                 @blur="handleTagBlur"
                 type="text" 
                 placeholder="Daily, Bakery, etc." 
-                class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm" 
+                class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm text-base" 
               />
               <!-- Tag Suggestions -->
               <div v-if="isTagSuggestionsVisible && tagSuggestions.length > 0" class="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl border border-espresso/10 rounded-2xl shadow-xl z-30 overflow-hidden py-1">
@@ -56,7 +56,7 @@
           <!-- Description -->
           <div class="space-y-2">
             <label class="block text-[0.65rem] font-black uppercase tracking-[0.3em] text-espresso/50 ml-6">Short Description</label>
-            <textarea v-model="form.description" rows="2" placeholder="Tell the story behind this dish..." class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm resize-none"></textarea>
+            <textarea v-model="form.description" rows="2" placeholder="Tell the story behind this dish..." class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm resize-none text-base"></textarea>
           </div>
 
           <!-- Ingredients Area -->
@@ -77,7 +77,7 @@
                     @blur="handleBlur"
                     type="text" 
                     placeholder="Ingredient name..." 
-                    class="w-full bg-white/50 border-2 border-white/80 rounded-2xl px-6 py-4 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm" 
+                    class="w-full bg-white/50 border-2 border-white/80 rounded-2xl px-6 py-4 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm text-base" 
                   />
                   <!-- Suggestion Dropdown -->
                   <div v-if="activeIngSearch === index && suggestions.length > 0" class="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-xl border border-espresso/10 rounded-2xl shadow-xl z-20 overflow-hidden py-1">
@@ -93,7 +93,7 @@
                 </div>
                 
                 <div class="col-span-9 md:col-span-4">
-                  <input v-model="ing.amount" type="text" placeholder="Amount (e.g. 250g)" class="w-full bg-white/50 border-2 border-white/80 rounded-2xl px-6 py-4 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm" />
+                  <input v-model="ing.amount" type="text" placeholder="Amount (e.g. 250g)" class="w-full bg-white/50 border-2 border-white/80 rounded-2xl px-6 py-4 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm text-base" />
                 </div>
                 
                 <div class="col-span-3 md:col-span-1 flex items-center justify-center">
@@ -110,7 +110,7 @@
             <div class="space-y-4">
                <div class="space-y-2">
                  <label class="block text-[0.65rem] font-black uppercase tracking-[0.3em] text-espresso/50 ml-6">Cooking / Prep Time</label>
-                 <input v-model="form.cookingTime" type="text" placeholder="e.g. 45 min" class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm" />
+                 <input v-model="form.cookingTime" type="text" placeholder="e.g. 45 min" class="w-full bg-white/50 border-2 border-white/80 rounded-3xl px-8 py-5 focus:outline-none focus:border-espresso/20 focus:bg-white/80 transition-all font-bold text-espresso shadow-sm text-base" />
                </div>
                
                <div class="space-y-2">
